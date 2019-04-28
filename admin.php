@@ -3,7 +3,7 @@
  * Plugin Name: Pre* Party Resource Hints
  * Plugin URI: https://wordpress.org/plugins/pre-party-browser-hints/
  * Description: Take advantage of the browser resource hints DNS-Prefetch, Prerender, Preconnect, Prefetch, and Preload to improve page load time.
- * Version: 1.6.0
+ * Version: 2.0.0
  * Author: Sam Perrow
  * Author URI: https://www.linkedin.com/in/sam-perrow
  * License: GPL2
@@ -32,15 +32,13 @@
 
 
 To do:
-1. security
-2. Set global hint scheme- prevent duplicate hints from being created. If a global hint is in place, no need to recreate it.
-3. Add ability to delete, add, update hints on the post modal pages.
-4. Turn form boxes on PP page into real modal boxes
-5. set and update hints for the home page, if it is set to display only the latest posts.
-
-
-Done: 
-add auto setting preconnect hints for each page
+- security
+- Turn form boxes on PP page into real modal boxes
+- set and update hints for the home page, if it is set to display only the latest posts. 
+- fix update notices
+- Home page hint options
+- Create v 2.0.0 info/updates tab
+- Load PP files at correct times in WP admin area
 
 */
 
