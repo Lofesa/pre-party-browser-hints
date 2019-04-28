@@ -7,7 +7,7 @@
  * Author: Sam Perrow
  * Author URI: https://www.linkedin.com/in/sam-perrow
  * License: GPL2
- * last edited April 2, 2019
+ * last edited April 28, 2019
  *
  * Copyright 2016  Sam Perrow  (email : sam.perrow399@gmail.com)
  *
@@ -27,9 +27,7 @@
 */
 
 
-/* Bugs:
-1. how to adjust auto preconnect settings if there's no home page? i.e, if the home URL shows recent posts?
-
+/* 
 
 To do:
 - security
@@ -51,24 +49,34 @@ define( 'GKTPP_PLUGIN', __FILE__ );
 define( 'GKTPP_VERSION', '1.6.0' );
 define( 'GKTPP_PLUGIN_DIR', untrailingslashit( dirname( GKTPP_PLUGIN ) ) );
 
+function gktpp_check_pp_admin() {
+    global $pagenow;
+    return ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'gktpp-plugin-settings' ) ? true : false;
+}
+
 add_action( 'init', 'gktppInitialize' );
 
 function gktppInitialize() {
 
 	if ( is_admin() ) {
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
         require_once GKTPP_PLUGIN_DIR . '/class-gktpp-options.php';
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-hints.php';
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
-    } else {
+        
+        if (gktpp_check_pp_admin()) {
+            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
+            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
+            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
+        }
+	} else {
 		require_once GKTPP_PLUGIN_DIR . '/class-gktpp-send-hints.php';
     }
+    require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-hints.php';
 
     // this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
-    require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
+    if ( ( get_option( 'gktpp_preconnect_status' ) === 'Yes' ) ) {
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
+    }
 }
+
 
 
 // register and call the CSS and JS we need only on the needed page
