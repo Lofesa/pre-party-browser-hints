@@ -6,181 +6,178 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class GKTPP_Create_Hints {
 
-	public $as_attr = '';
-	public $type_attr = '';
-	public $crossorigin = '';
-	public $url = '';
-	public $header_str = '';
-    public $head_str = '';
-    
+    public $results;
+
     // public function __construct() {
     //     add_action( "admin_init", array( $this, 'save_data' ) );
     // }
 
-	public function insert_data() {
-
-        if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
-            $hint_type = stripslashes( $_POST['hint_type'] );
-        } else {
-            return '&updated=error';
-        }
+	public function prepare_data($url, $hint_type, $post_id) {
 
         global $wpdb;
-        $post_id = (!empty($_GET['postID'])) ? $_GET['postID'] : '0';
-        $table = $wpdb->prefix . 'gktpp_table';
+        $this->table = $wpdb->prefix . 'gktpp_table';
         
-        if (isset( $_POST['UseOnHomePostsOnly'] )) {
-            $val = 4;
+
+        if (!empty($post_id)) {
+            $this->post_id = $post_id;
+        } elseif (isset( $_POST['UseOnHomePostsOnly'] )) {
+            $this->post_id = '-1';
+        } else {
+            $this->post_id = '0';
         }
 
-        $clean_url = $this->santize_url( $_POST['url'] );
+        $this->sanitize_data($url, $hint_type);
 
-		$this->configure_hint_attrs( $clean_url, $hint_type );
+        if ( preg_match( '/(DNS-Prefetch|Preconnect)/', $this->hint_type ) ) {
+            $this->parse_for_domain_name();
+        }
 
-		$this->create_str( $this->url, $hint_type, $this->as_attr, $this->type_attr, $this->crossorigin );
 
-		$sql = "INSERT INTO $table ( id, url, hint_type, status, as_attr, type_attr, crossorigin, ajax_domain, header_string, head_string, post_id, created_by ) 
-                VALUES ( null, %s, %s, 'Enabled', %s, %s, %s, %d, %s, %s, %s, %s )";
-                
-        $current_user = wp_get_current_user()->display_name;
-
-		$wpdb->query(
-			$wpdb->prepare( $sql, 
-                array( $this->url, $hint_type, $this->as_attr, $this->type_attr, $this->crossorigin, 0, $this->header_str, $this->head_str, $post_id, $current_user ) ) );
+        $this->set_attributes();
+        $this->create_str();         
         
-        return '&updated=success';
+        if ( $this->post_id === '0') {
+            $this->remove_duplicate_post_hints();
+        }
+		
+        $this->insert_hints();
+        return $this->results;
+        //  wp_safe_redirect( admin_url( "admin.php?page=gktpp-plugin-settings$results" ));
+
     }
 
-	private function santize_url( $url ) {
-		return esc_url( preg_replace('/[^%A-z0-9?=\.\/\-:\s]/', '', $url) );
-	}
+    public function sanitize_data($url, $hint_type) {
+        $this->url = filter_var(str_replace(' ', '', $url), FILTER_SANITIZE_URL);
+        $this->hint_type = preg_replace('/[^%A-z-]/', '', $hint_type);
+        return $this->post_id = preg_replace('/[^%0-9]/', '', $this->post_id);
+    }
 
-	public function create_str( $url, $hint_type, $as_attr, $type_attr, $crossorigin ) {
-		$hint_type = strtolower( $hint_type );
-		$header_as_attr = $header_type_attr = $head_as_attr = $head_type_attr = $header_crossorigin = $head_crossorigin = '';
-
-		if ( strlen($as_attr) > 0 ) {
-			$header_as_attr = " as=$as_attr;";
-			$head_as_attr = ' as="$as_attr"';
-		} else {
-            $header_as_attr = '';
-            $head_as_attr = '';
+    public function parse_for_domain_name() {
+        if ( preg_match( '/(http|https)/i', $this->url ) ) {
+            return $this->url = parse_url( $this->url, PHP_URL_SCHEME ) . '://' . parse_url( $this->url, PHP_URL_HOST );
+        } elseif ( substr( $this->url, 0, 2 ) === '//' ) {
+            return $this->url = '//' . parse_url( $this->url, PHP_URL_HOST );
+        } else {
+            return $this->url = '//' . parse_url( $this->url, PHP_URL_PATH );
         }
+    }
 
-		if ( strlen($type_attr) > 0 ) {
-			$header_type_attr = " type=$type_attr;";
-			$head_type_attr = ' type="$type_attr"';
-		} else {
-            $header_type_attr = '';
-			$head_type_attr = '';      
-        }
-
-		if ( strlen($crossorigin) > 0 ) {
-			$header_crossorigin = " $crossorigin;";
-			$head_crossorigin = " $crossorigin";
-		} else {
-            $header_crossorigin = '';
-			$head_crossorigin = '';
-        }
-
-		$this->head_str = '<link href="' . $url . '" rel="' . $hint_type . '"' . $head_as_attr . $head_type_attr . $head_crossorigin . '>';
-
-		$header = '<' . $url . '>; rel=' . $hint_type . ';' . $header_as_attr . $header_type_attr . $header_crossorigin . ',';
-        $lastSemiColonPos = strrpos($header, ';');
-
-		if ( $lastSemiColonPos === (strlen($header) - 2) ) {		// replace the last semi-colon and replace it with a comma.
-			$header = substr( $header, 0, $lastSemiColonPos) . ',';
-		}
-
-		return $this->header_str = $header;
-	}
-
-	public function get_attributes( $url ) {
-		$basename = pathinfo( $url )['basename'];
+    public function set_attributes() {
+		$basename = pathinfo( $this->url )['basename'];
 
 		$file_type = strlen( strpbrk( $basename, '?' ) ) > 0
 			? strrchr( explode( '?', $basename )[0], '.' ) 
-			: strrchr( $basename, '.' );
+            : strrchr( $basename, '.' );
 
-		switch ( $file_type ) {
-			case '.js':
-				$this->as_attr = 'script';
-				break;
-			case '.css':
-				$this->as_attr= 'style';
-				break;
-			case '.mp3':
-				$this->as_attr = 'audio';
-				break;
-			case '.mp4':
-				$this->as_attr = 'video';
-				break;
-			case '.jpg':
-			case '.jpeg':
-			case '.png':
-			case '.svg':
-				$this->as_attr = 'image';
-				break;
-			case '.vtt':
-				$this->as_attr = 'track';
-				break;
-			case '.woff':
-				$this->as_attr = 'font';
-				$this->crossorigin = 'crossorigin';
-				$this->type_attr = 'font/woff';
-				break;
-			case '.woff2':
-				$this->as_attr = 'font';
-				$this->crossorigin = 'crossorigin';
-				$this->type_attr = 'font/woff2';
-				break;
-			case '.ttf':
-				$this->as_attr = 'font';
-				$this->crossorigin = 'crossorigin';
-				$this->type_attr = 'font/ttf';
-				break;
-			case '.eot':
-				$this->as_attr = 'font';
-				$this->crossorigin = 'crossorigin';
-				$this->type_attr = 'font/eot';
-				break;
-			case '.swf':
-				$this->as_attr = 'embed';
-				break;
-			default:
-				$this->as_attr = '';
-		}
+        $this->crossorigin = ( preg_match('/fonts.(googleapis|gstatic).com/i', $this->url) || preg_match( '/(.woff|.woff2|.ttf|.eot)/', $file_type ) ) ? ' crossorigin' : '';
 
-		if ( strlen($this->crossorigin) === 0) {
-			$this->check_for_crossorigin( $url );
-		}
+        if ( preg_match( '/(.woff|.woff2|.ttf|.eot)/', $file_type ) ) {
+            $this->as_attr = 'font';
+        } elseif ($file_type === '.js') {
+            $this->as_attr = 'script';
+        } elseif ($file_type === '.css') {
+            $this->as_attr = 'style';
+        } elseif ($file_type === '.mp3') {
+            $this->as_attr = 'audio';
+        } elseif ($file_type === '.mp4') {
+            $this->as_attr = 'video';
+        } elseif (preg_match( '/(.jpg|.jpeg|.png|.svg)/', $file_type )) {
+            $this->as_attr = 'image';
+        } elseif ($file_type === '.vtt') {
+            $this->as_attr = 'track';
+        } elseif ($file_type === '.swf') {
+            $this->as_attr = 'embed';
+        } else {
+            $this->as_attr = '';
+        }
 
-		return $this->as_attr;
-	}
-
-	public function check_for_crossorigin( $url ) {
-		return $this->crossorigin = preg_match( '/(fonts.googleapis.com|fonts.gstatic.com)/i', $url ) ? 'crossorigin' : '';
-	}
-
-	private function configure_hint_attrs( $url, $hint_type ) {
-
-		$this->get_attributes( $url );
-
-		if ( $hint_type === 'DNS-Prefetch' || $hint_type === 'Preconnect' ) {
-			return $this->filter_for_domain_name( $url );
-		}
-
-		return $this->url = $url;
-	}
-
-	private function filter_for_domain_name( $url ) {
-		if ( preg_match( '/(http|https)/i', $url ) ) {
-			return $this->url = parse_url( $url, PHP_URL_SCHEME ) . '://' . parse_url( $url, PHP_URL_HOST );
-		} elseif ( substr( $url, 0, 2 ) === '//' ) {
-			return $this->url = '//' . parse_url( $url, PHP_URL_HOST );
-		} else {
-			return $this->url = '//' . parse_url( $url, PHP_URL_PATH );
-		}
+        if ($file_type === '.woff') {
+            $this->type_attr = 'font/woff';
+        } elseif ($file_type === '.woff2') {
+            $this->type_attr = 'font/woff2';
+        } elseif ($file_type === '.ttf') {
+            $this->type_attr = 'font/ttf';
+        } elseif ($file_type === '.eot') {
+            $this->type_attr = 'font/eot';
+        } else {
+            $this->type_attr = '';
+        }
+        return $this;
     }
+
+	public function create_str() {
+        $lower_case_hint = strtolower( $this->hint_type );
+
+        $this->head_str = '<link href="' . $this->url . '" rel="' . $lower_case_hint . '"';
+        $this->header_str = "<$this->url>; rel=\"$lower_case_hint\"";
+
+        if (!empty($this->as_attr)) {
+            $this->head_str .= " as=\"$this->as_attr\"";
+            $this->header_str .= " as=$this->as_attr;";
+        }
+
+        if (!empty($this->type_attr)) {
+            $this->head_str .= " type=\"$this->type_attr\"";
+            $this->header_str .= " type=$this->type_attr;";
+        }
+
+        if (!empty($this->crossorigin)) {
+            $this->head_str .= $this->crossorigin;
+            $this->header_str .= $this->crossorigin . ';';
+        }
+
+        $this->head_str .= '>';
     
+        $lastSemiColonPos = strrpos($this->header_str, ';');
+
+		if ( $lastSemiColonPos === (strlen($this->header_str) - 2) ) {		// replace the last semi-colon and replace it with a comma.
+			$this->header_str = substr( $this->header_str, 0, $lastSemiColonPos) . ',';
+		}
+
+		return $this;
+	}
+
+    public function remove_duplicate_post_hints() {
+        global $wpdb;
+        $url2 = "'" . $this->url . "'";
+        $hint2 = "'" . $this->hint_type . "'";
+        $sql = "SELECT COUNT(*) FROM $this->table WHERE hint_type = $hint2 AND url = $url2";
+        $count = $wpdb->get_var( $sql );
+
+        if ($count > 0) {
+            $wpdb->delete( $this->table, array(
+                'url'           => $this->url,
+                'hint_type'     => $this->hint_type
+            ), array( '%s', '%s' ) );
+
+            // return $this->result = '&removedDupPostHint=success';
+
+            // return $this->result['removedDupPostHint'] = true;
+            return $this->results .= '&removedDupPostHint=true';
+        }
+    }
+
+    public function insert_hints() {
+        global $wpdb;
+        $current_user = wp_get_current_user()->display_name;
+
+        $this->autoset = ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ? 1 : 0;
+
+        $wpdb->insert( $this->table, array(
+            'url'           => $this->url,
+            'hint_type'     => $this->hint_type,
+            'ajax_domain'   => $this->autoset,
+            'as_attr'       => $this->as_attr,
+            'type_attr'     => $this->type_attr,
+            'crossorigin'   => $this->crossorigin,
+            'header_string' => $this->header_str,
+            'head_string'   => $this->head_str,
+            'post_id'       => $this->post_id,
+            'created_by'    => $current_user ) );
+
+        // return $this->result['added'] = true;
+        return $this->results .= '&added=true';
+
+    }
+
 }

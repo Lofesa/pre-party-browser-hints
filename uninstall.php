@@ -7,7 +7,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 function gktpp_uninstall_plugin() {
     global $wpdb;
 
-    delete_option( 'gktpp_preconnect_status' );
+    delete_option( 'gktpp_autoload_preconnects' );
     delete_option( 'gktpp_reset_preconnect' );
     delete_option( 'gktpp_send_in_header' );
     delete_user_meta( get_current_user_id(), 'gktpp_screen_options' );

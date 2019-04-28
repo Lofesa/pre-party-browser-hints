@@ -14,7 +14,12 @@ class GKTPP_Send_Hints {
         global $wpdb;
         global $post;
         
-        $post_ID = $post->ID;
+        $post_ID = (string) ($post->ID);
+
+        if (is_home()) {
+            $post_ID = '-1';
+        }
+
 		$table = $wpdb->prefix . 'gktpp_table';
 		$links = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE status = %s AND post_id = %s OR post_id = %s", 'Enabled', $post_ID, '0'), OBJECT );
 
@@ -48,4 +53,4 @@ get_option( 'gktpp_send_in_header' ) === 'HTTP Header'
     ? header( 'Link:' . gktpp_send_hints()['header_string'] ) 
     : add_action( 'wp_head', function() { 
         return printf( gktpp_send_hints()['head_string'] ); 
-    }, 1, 0 ); 
+}, 1, 0 );

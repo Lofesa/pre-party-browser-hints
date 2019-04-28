@@ -4,12 +4,12 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 
     public function add_url_hint() {
 
-        if ( ! is_admin() )
+        if ( ! is_admin() ) {
             exit();
+        }
+            
 
-        global $pagenow;
-
-        $name = ($pagenow === 'admin.php' && 'gktpp-plugin-settings' === $_GET['page']) ? 'name="gktpp-settings-submit" type="submit"' : 'type="button"';
+        $name = (gktpp_check_pp_admin()) ? 'name="gktpp-settings-submit" type="submit"' : 'type="button"';
         
         ?>
 
@@ -134,16 +134,16 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 
         if ( isset( $_POST['gktpp-reset-preconnect'] ) ) {
             update_option( 'gktpp_reset_preconnect', 'notset', 'yes' );
-            update_option( 'gktpp_preconnect_status', 'Yes', 'yes' );
+            update_option( 'gktpp_autoload_preconnects', 'Yes', 'yes' );
         }
 
         if ( isset( $_POST['gktpp-save-user-options'] ) ) {
-            update_option( 'gktpp_preconnect_status', $_POST['gktpp-preconnect-status'], 'yes' );
+            update_option( 'gktpp_autoload_preconnects', $_POST['gktpp-preconnect-status'], 'yes' );
             update_option( 'gktpp_disable_wp_hints', $_POST['gktpp-disable-wp-hints-option'], 'no' );
             update_option( 'gktpp_send_in_header', $_POST['gktpp-send-in-header'], 'yes' );
         } 
         
-        $preconnect_status = get_option( 'gktpp_preconnect_status' );
+        $preconnect_status = get_option( 'gktpp_autoload_preconnects' );
         $header_option = get_option( 'gktpp_send_in_header' );
         $disable_hints = get_option( 'gktpp_disable_wp_hints' ); 
 

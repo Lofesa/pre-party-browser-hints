@@ -24,7 +24,6 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
     }
 
     public function get_proper_data() {
-        global $pagenow;
         global $wpdb;
 
         $this->_table = $wpdb->prefix . 'gktpp_table';
@@ -38,7 +37,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             $this->_per_page = 10;
         }
 
-        if ( ('admin.php' === $pagenow) && ( $_GET['page'] === 'gktpp-plugin-settings' ) ) {
+        if ( gktpp_check_pp_admin() ) {
             $this->_sql = "SELECT * FROM $this->_table";
         } 
     }
@@ -64,8 +63,6 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 	}
 
 	public function get_columns() {
-        global $pagenow;
-
         $columns = array(
             'cb'			=> '<input type="checkbox" />',
             'url'			=> __( 'URL', 'gktpp' ),
@@ -75,7 +72,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'created_by'	=> __( 'Created By', 'gktpp' )
         );
 
-        if ( ('admin.php' === $pagenow) && ( $_GET['page'] === 'gktpp-plugin-settings' ) ) {
+        if ( gktpp_check_pp_admin() ) {
             $columns['post_name'] = __( 'Post Name', 'gktpp' );
         }
 
@@ -145,7 +142,6 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 			exit;
 		}
 
-        global $pagenow;
         $this->get_proper_data();
         
         if ( isset( $_GET['updated'] ) ) {

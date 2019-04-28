@@ -13,7 +13,13 @@ class GKTPP_Hint_Info {
 		<p><a href="<?php echo esc_html( $link . 'prerender' ); ?>">Prerender</a></p>
 		<p><a href="<?php echo esc_html( $link . 'preconnect' ); ?>">Preconnect</a></p>
 		<p><a href="<?php echo esc_html( $link . 'preload' ); ?>">Preload</a></p>
+        
         <?php 
+            $this->show_dnsprefetch_info();
+            $this->show_prefetch_info();
+            $this->show_prerender_info();
+            $this->show_preconnect_info();
+            $this->show_preload_info();
     }
 
     public function show_dnsprefetch_info() {

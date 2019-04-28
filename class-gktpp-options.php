@@ -35,13 +35,16 @@ class GKTPP_Options {
             }
 
             check_admin_referer( 'gkt_preP-settings-page' );
-            global $pagenow;
 
-            if ( ('admin.php' === $pagenow) && ( $_GET['page'] === 'gktpp-plugin-settings' ) ) {
-                $create_hints = new GKTPP_Create_Hints();
-                $url_params = $create_hints->insert_data();
+            if ( gktpp_check_pp_admin() ) {
+
+                if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
+                    $create_hints = new GKTPP_Create_Hints();
+                    $url_params = $create_hints->prepare_data( $_POST['url'], $_POST['hint_type'], null );
+                }
+
             } 
-             wp_safe_redirect( admin_url( "admin.php?page=gktpp-plugin-settings$url_params" ));
+            wp_safe_redirect( admin_url( "admin.php?page=gktpp-plugin-settings$url_params" ));
             exit();
 	    }
     }
@@ -68,20 +71,20 @@ class GKTPP_Options {
 		if ( ! is_admin() ) {
 			exit;
 		}
-		global $pagenow;
 		?>
-		<div class="wrap">
-			<h2><?php esc_html_e( 'Pre* Party Plugin Settings', 'gktpp' ); ?></h2>
-			<form method="post" action="<?php admin_url( 'admin.php?page=gktpp-plugin-settings' ); ?>">
-				<?php ( isset( $_GET['tab'] ) ) ? $this->admin_tabs( $_GET['tab'] ) : $this->admin_tabs( 'insert-urls' ); ?>
-			</form>
-            <?php
-                if ( 'admin.php' === $pagenow && 'gktpp-plugin-settings' === $_GET['page'] ) {
-                    return $this->display_tabs();
-                } 
-            ?>
-		</div>
-    <?php }
+            <div class="wrap">
+                <h2><?php esc_html_e( 'Pre* Party Plugin Settings', 'gktpp' ); ?></h2>
+                <form method="post" action="<?php admin_url( 'admin.php?page=gktpp-plugin-settings' ); ?>">
+                    <?php ( isset( $_GET['tab'] ) ) ? $this->admin_tabs( $_GET['tab'] ) : $this->admin_tabs( 'insert-urls' ); ?>
+                </form>
+                <?php
+                    if ( gktpp_check_pp_admin() ) {
+                        return $this->display_tabs();
+                    } 
+                ?>
+            </div>
+        <?php 
+    }
     
     public function display_tabs() {
 
@@ -98,11 +101,6 @@ class GKTPP_Options {
             case 'info':
                 $hint_info = new GKTPP_Hint_Info();
                 $hint_info->resource_hint_nav();
-                $hint_info->show_dnsprefetch_info();
-                $hint_info->show_prefetch_info();
-                $hint_info->show_prerender_info();
-                $hint_info->show_preconnect_info();
-                $hint_info->show_preload_info();
             break;
 
             default:

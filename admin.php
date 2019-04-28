@@ -59,20 +59,21 @@ add_action( 'init', 'gktppInitialize' );
 function gktppInitialize() {
 
 	if ( is_admin() ) {
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-hints.php';
         require_once GKTPP_PLUGIN_DIR . '/class-gktpp-options.php';
-        
-        if (gktpp_check_pp_admin()) {
-            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
-            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
-            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
-        }
-	} else {
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
+    } 
+    
+    else {
 		require_once GKTPP_PLUGIN_DIR . '/class-gktpp-send-hints.php';
     }
-    require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-hints.php';
+
 
     // this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
-    if ( ( get_option( 'gktpp_preconnect_status' ) === 'Yes' ) ) {
+    if ( ( get_option( 'gktpp_autoload_preconnects' ) === 'Yes' ) ) {
         require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
     }
 }
@@ -88,7 +89,7 @@ function gktpp_register_admin_files() {
     wp_register_style( 'gktpp_styles_css', plugin_dir_url( __FILE__ ) . 'css/styles.css', null, GKTPP_VERSION, 'all' );
     wp_register_script( 'gktpp_admin_js', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery'), GKTPP_VERSION, true );
 
-    if ($pagenow === 'post.php' || 'gktpp-plugin-settings' === $_GET['page']) {
+    if ( $pagenow === 'post.php' || gktpp_check_pp_admin() ) {
         wp_enqueue_script( 'gktpp_admin_js' );
         wp_enqueue_style( 'gktpp_styles_css' );
     }
@@ -102,10 +103,11 @@ add_action( 'wpmu_new_blog', 'gktpp_install_db_table' );
 function gktpp_install_db_table() {
 	global $wpdb;
 
-	add_option( 'gktpp_preconnect_status', 'Yes', '', 'yes' );
-	add_option( 'gktpp_reset_preconnect', 'notset', '', 'yes' );
+	add_option( 'gktpp_autoload_preconnects', 'Yes', '', 'yes' );
 	add_option( 'gktpp_send_in_header', 'HTTP Header', '', 'yes' );
 	add_option( 'gktpp_disable_wp_hints', 'No', '', 'yes' );
+    add_option( 'gktpp_reset_home_posts', 'notset', '', 'yes' );
+
 
 	$table = $wpdb->prefix . 'gktpp_table';
 	$charset_collate = $wpdb->get_charset_collate();
