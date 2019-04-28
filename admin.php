@@ -3,11 +3,11 @@
  * Plugin Name: Pre* Party Resource Hints
  * Plugin URI: https://wordpress.org/plugins/pre-party-browser-hints/
  * Description: Take advantage of the browser resource hints DNS-Prefetch, Prerender, Preconnect, Prefetch, and Preload to improve page load time.
- * Version: 1.5.5
+ * Version: 1.6.0
  * Author: Sam Perrow
  * Author URI: https://www.linkedin.com/in/sam-perrow
  * License: GPL2
- * last edited February 16, 2019
+ * last edited April 2, 2019
  *
  * Copyright 2016  Sam Perrow  (email : sam.perrow399@gmail.com)
  *
@@ -26,32 +26,50 @@
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+
+/* Bugs:
+1. how to adjust auto preconnect settings if there's no home page? i.e, if the home URL shows recent posts?
+
+
+To do:
+1. security
+2. Set global hint scheme- prevent duplicate hints from being created. If a global hint is in place, no need to recreate it.
+3. Add ability to delete, add, update hints on the post modal pages.
+4. Turn form boxes on PP page into real modal boxes
+5. set and update hints for the home page, if it is set to display only the latest posts.
+
+
+Done: 
+add auto setting preconnect hints for each page
+
+*/
+
 // prevent direct file access
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GKT_PREP_PLUGIN', __FILE__ );
-define( 'GKT_PREP_PLUGIN_DIR', untrailingslashit( dirname( GKT_PREP_PLUGIN ) ) );
-
+define( 'GKTPP_PLUGIN', __FILE__ );
+define( 'GKTPP_VERSION', '1.6.0' );
+define( 'GKTPP_PLUGIN_DIR', untrailingslashit( dirname( GKTPP_PLUGIN ) ) );
 
 add_action( 'init', 'gktppInitialize' );
 
 function gktppInitialize() {
+
 	if ( is_admin() ) {
-		require_once GKT_PREP_PLUGIN_DIR . '/class-gktpp-insert-to-db.php';
-		require_once GKT_PREP_PLUGIN_DIR . '/class-gktpp-table.php';
-		require_once GKT_PREP_PLUGIN_DIR . '/class-gktpp-options.php';
-		require_once GKT_PREP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
-	} else {
-		require_once GKT_PREP_PLUGIN_DIR . '/class-gktpp-send-hints.php';
-	}
-}
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-options.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-hints.php';
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
+    } else {
+		require_once GKTPP_PLUGIN_DIR . '/class-gktpp-send-hints.php';
+    }
 
-
-// this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
-if ( ( get_option( 'gktpp_preconnect_status' ) === 'Yes' ) && ( get_option( 'gktpp_reset_preconnect' ) === 'notset' ) ) {
-	require_once GKT_PREP_PLUGIN_DIR . '/class-gktpp-ajax.php';
+    // this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
+    require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
 }
 
 
@@ -59,15 +77,15 @@ if ( ( get_option( 'gktpp_preconnect_status' ) === 'Yes' ) && ( get_option( 'gkt
 add_action( 'admin_menu', 'gktpp_register_admin_files' );
 
 function gktpp_register_admin_files() {
-	global $pagenow;
+    global $pagenow;
+    
+    wp_register_style( 'gktpp_styles_css', plugin_dir_url( __FILE__ ) . 'css/styles.css', null, GKTPP_VERSION, 'all' );
+    wp_register_script( 'gktpp_admin_js', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery'), GKTPP_VERSION, true );
 
-	if ( isset( $_GET['page'] ) && $_GET['page'] === 'gktpp-plugin-settings' ) {
-		wp_register_script( 'gktpp_admin_js', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery'), '1.5.3.2', true );
-		wp_register_style( 'gktpp_styles_css', plugin_dir_url( __FILE__ ) . 'css/styles.css', null, '1.5.3.3', 'all' );
-
-		wp_enqueue_script( 'gktpp_admin_js' );
-		wp_enqueue_style( 'gktpp_styles_css' );
-	}
+    if ($pagenow === 'post.php' || 'gktpp-plugin-settings' === $_GET['page']) {
+        wp_enqueue_script( 'gktpp_admin_js' );
+        wp_enqueue_style( 'gktpp_styles_css' );
+    }
 }
 
 
@@ -117,6 +135,8 @@ function gktpp_install_db_table() {
 			ajax_domain TINYINT(1) DEFAULT 0 NOT NULL,
 			header_string VARCHAR(255) DEFAULT '' NOT NULL,
 			head_string VARCHAR(255) DEFAULT '' NOT NULL,
+            post_id VARCHAR(55) DEFAULT '0' NOT NULL,
+            created_by VARCHAR(55) DEFAULT '' NOT NULL,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 

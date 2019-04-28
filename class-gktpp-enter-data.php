@@ -2,45 +2,50 @@
 
 class GKTPP_Enter_Data extends GKTPP_Table {
 
-     protected static function add_url_hint() {
+    public static function add_url_hint() {
 
-          if ( ! is_admin() )
-               exit();
-          ?>
+        if ( ! is_admin() )
+            exit();
 
-		<table id="gktpp-enter-data" class="gktpp-table fixed widefat striped" cellspacing="0">
-			<?php wp_nonce_field( 'gkt_preP-settings-page' ); ?>
+        global $pagenow;
 
-			<thead>
-                    <tr>
-					<th colspan="5"><h2 style="text-align: center;"><?php esc_html_e( 'Add New Resource Hint', 'gktpp' ); ?></h2></th>
-				</tr>
-			</thead>
+        $name = ($pagenow === 'admin.php' && 'gktpp-plugin-settings' === $_GET['page']) ? 'name="gktpp-settings-submit" type="submit"' : 'type="button"';
+        
+        ?>
 
-			<tbody>
+        <table id="gktpp-enter-data" class="gktpp-table fixed widefat striped" cellspacing="0">
+            <?php wp_nonce_field( 'gkt_preP-settings-page' ); ?>
 
-				<tr>
-					<td style="text-align: right;" colspan="1"><?php esc_html_e( 'URL:', 'gktpp' ); ?></td>
-					<td style="width: 100%;" colspan="4">
-						<label for="url">
-							<input placeholder="<?php esc_attr_e( 'Enter valid domain or URL...', 'gktpp' ); ?>" class="widefat" name="url" />
-						</label>
-					</td>
-				</tr>
+            <thead>
+                <tr>
+                    <th colspan="5"><h2 style="text-align: center;"><?php esc_html_e( 'Add New Resource Hint', 'gktpp' ); ?></h2></th>
+                </tr>
+            </thead>
 
-				<?php self::show_pp_radio_options(); ?>
+            <tbody>
 
-			</tbody>
+                <tr>
+                    <td style="text-align: right;" colspan="1"><?php esc_html_e( 'URL:', 'gktpp' ); ?></td>
+                    <td style="width: 100%;" colspan="4">
+                        <label for="url">
+                            <input id="gktppURL" placeholder="<?php esc_attr_e( 'Enter valid domain or URL...', 'gktpp' ); ?>" class="widefat" name="url" />
+                        </label>
+                    </td>
+                </tr>
 
-			<tfoot>
-                    <tr>
-					<th colspan="5" style="text-align: center; padding: 20px 0;">
-						<input type="submit" name="gktpp-settings-submit" class="button button-primary" value="<?php esc_attr_e( 'Insert Resource Hint', 'gktpp' ); ?>" />
-					</th>
-				</tr>
-			</tfoot>
+                <?php self::show_pp_radio_options(); ?>
 
-		</table>
+            </tbody>
+
+            <tfoot>
+                <tr>                  
+                    <th colspan="5" style="text-align: center; padding: 20px 0;">
+                        <input id="gktpp-submit-hints" <?php echo $name; ?> class="button button-primary" value="<?php esc_attr_e( 'Insert Resource Hint', 'gktpp' ); ?>" />
+                    </th>
+                </tr>
+            </tfoot>
+
+        </table>
 		<?php
 	}
 
@@ -50,52 +55,51 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 		<tr>
 			<td colspan="1">
 				<label for="hint_type">
-                         <button class="gktpp-help-tip-hint before">
-                              <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert domain names from external URL\'s to perform DNS resolution early.', 'gktpp' ); ?></p>
-                         </button>
-                         <span class="gktpp-hint"><?php esc_html_e( 'DNS-Prefetch' ); ?></span>
+                    <button class="gktpp-help-tip-hint before">
+                        <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert domain names from external URL\'s to perform DNS resolution early.', 'gktpp' ); ?></p>
+                    </button>
+                    <span class="gktpp-hint"><?php esc_html_e( 'DNS-Prefetch' ); ?></span>
 					<input class="gktpp-radio" name="hint_type" type="radio" value="DNS-Prefetch" <?php if ( 'DNS-Prefetch' === $hint_type ) { echo 'checked="checked"';} ?> />
-
 				</label>
 			</td>
 
 			<td colspan="1">
 				<label for="hint_type">
-                         <button class="gktpp-help-tip-hint before">
-                              <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert the full URL of a resource that is likely to be needed on a page later.', 'gktpp' ); ?></p>
-                         </button>
-                         <span class="gktpp-hint"><?php esc_html_e( 'Prefetch' ); ?></span>
-                         <input class="gktpp-radio" name="hint_type" type="radio" value="Prefetch" <?php if ( 'Prefetch' === $hint_type ) { echo 'checked="checked"'; } ?> />
+                    <button class="gktpp-help-tip-hint before">
+                        <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert the full URL of a resource that is likely to be needed on a page later.', 'gktpp' ); ?></p>
+                    </button>
+                    <span class="gktpp-hint"><?php esc_html_e( 'Prefetch' ); ?></span>
+                    <input class="gktpp-radio" name="hint_type" type="radio" value="Prefetch" <?php if ( 'Prefetch' === $hint_type ) { echo 'checked="checked"'; } ?> />
 				</label>
 			</td>
 
 			<td colspan="1">
 				<label for="hint_type">
-                         <button class="gktpp-help-tip-hint before">
-                              <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert the full URL of a page/post your visitors are likely to navigate towards.', 'gktpp' ); ?></p>
-                         </button>
-                         <span class="gktpp-hint"><?php esc_html_e( 'Prerender' ); ?></span>
-                         <input class="gktpp-radio" name="hint_type" type="radio" value="Prerender" <?php if ( 'Prerender' === $hint_type ) { echo 'checked="checked"'; } ?> />
+                    <button class="gktpp-help-tip-hint before">
+                        <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert the full URL of a page/post your visitors are likely to navigate towards.', 'gktpp' ); ?></p>
+                    </button>
+                    <span class="gktpp-hint"><?php esc_html_e( 'Prerender' ); ?></span>
+                    <input class="gktpp-radio" name="hint_type" type="radio" value="Prerender" <?php if ( 'Prerender' === $hint_type ) { echo 'checked="checked"'; } ?> />
 				</label>
 			</td>
 
 			<td colspan="1">
 				<label for="hint_type">
-                         <button class="gktpp-help-tip-hint before">
-                              <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert domain names from external URL\'s to perform DNS resolution, initial connection, and SSL negotiation ahead of time.', 'gktpp' ); ?></p>
-                         </button>
-                         <span class="gktpp-hint"><?php esc_html_e( 'Preconnect' ); ?></span>
-                         <input class="gktpp-radio" name="hint_type" type="radio" value="Preconnect" <?php if ( 'Preconnect' === $hint_type ) { echo 'checked="checked"'; } ?> />
+                    <button class="gktpp-help-tip-hint before">
+                        <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert domain names from external URL\'s to perform DNS resolution, initial connection, and SSL negotiation ahead of time.', 'gktpp' ); ?></p>
+                    </button>
+                    <span class="gktpp-hint"><?php esc_html_e( 'Preconnect' ); ?></span>
+                    <input class="gktpp-radio" name="hint_type" type="radio" value="Preconnect" <?php if ( 'Preconnect' === $hint_type ) { echo 'checked="checked"'; } ?> />
 				</label>
 			</td>
 
 			<td colspan="1">
 				<label for="hint_type">
-                         <button class="gktpp-help-tip-hint before">
-                              <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert the full URL of a resource that is needed on a current page.', 'gktpp' ); ?></p>
-                         </button>
-                         <span class="gktpp-hint"><?php esc_html_e( 'Preload' ); ?></span>
-                         <input class="gktpp-radio" name="hint_type" type="radio" value="Preload" <?php if ( 'Preload' === $hint_type ) { echo 'checked="checked"'; } ?> />
+                    <button class="gktpp-help-tip-hint before">
+                        <p class='gktpp-help-tip-box'><?php esc_html_e( 'Insert the full URL of a resource that is needed on a current page.', 'gktpp' ); ?></p>
+                    </button>
+                    <span class="gktpp-hint"><?php esc_html_e( 'Preload' ); ?></span>
+                    <input class="gktpp-radio" name="hint_type" type="radio" value="Preload" <?php if ( 'Preload' === $hint_type ) { echo 'checked="checked"'; } ?> />
 				</label>
 			</td>
 
@@ -104,13 +108,13 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 		<?php
 	}
 
-    protected static function show_info() { ?>
+    public static function show_info() { ?>
         <div class="gktpp-table info postbox">
 
             <h2 class="gktpp-collapse-btn" class="hndle ui-sortable-handle" style="text-align: center;">
                 <span><?php esc_html_e( 'Settings', 'gktpp' ); ?></span>
                 <button type="button" class="handlediv" aria-expanded="false">
-                        <span class="gktpp-toggle-indicator" aria-hidden="true"></span>
+                    <span class="gktpp-toggle-indicator" aria-hidden="true"></span>
                 </button>
             </h2>
 
@@ -142,7 +146,7 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 
         ?>
 
-       <form class="gktpp-form" method="post" action='<?php admin_url( "admin.php?page=gktpp-plugin-settings&_wpnonce=" );?>'>
+       <form class="gktpp-form" method="post" action="<?php admin_url( 'admin.php?page=gktpp-plugin-settings&_wpnonce=' );?>">
 
             <div class="gktpp-div">
                 <h2 class="gktpp-hint"><?php esc_html_e( 'Automatically Set Preconnect Hints?', 'gktpp' ); ?></h2>
@@ -150,14 +154,14 @@ class GKTPP_Enter_Data extends GKTPP_Table {
                     <p class='gktpp-help-tip-box'><?php esc_html_e( 'JavaScript, CSS, and images loaded from external domains will preconnect automatically.', 'gktpp' ); ?></p>
                 </button>
             
-            <br />
-            <br />
+                <br />
+                <br />
 
                 <select name="gktpp-preconnect-status">
                     <option value="<?php echo esc_attr( 'Yes', 'gktpp' ); ?>" <?php if ( 'Yes' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e( 'Yes', 'gktpp' ); ?></option>
                     <option value="<?php echo esc_attr( 'No', 'gktpp' ); ?>" <?php if ( 'No' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e( 'No', 'gktpp' ); ?></option>
                 </select>
-                <input type="submit" name="gktpp-reset-preconnect" class="button-secondary" value="<?php esc_attr_e( 'Reset Links', 'gktpp' ); ?>" />
+                <input type="submit" name="gktpp-reset-preconnect" class="button-secondary" value="<?php esc_attr_e( 'Reset Preconnect Links', 'gktpp' ); ?>" />
             </div>
 
 
@@ -231,40 +235,40 @@ class GKTPP_Enter_Data extends GKTPP_Table {
         }
     }
 
-     protected static function contact_author() { ?>
+     public static function contact_author() { ?>
           <div class="gktpp-table info postbox">
 
                <h2 class="gktpp-collapse-btn" class="hndle ui-sortable-handle" style="text-align: center;">
                     <span><?php esc_html_e( 'Request New Feature or Report a Bug:' ); ?></span>
                     <button type="button" class="handlediv" aria-expanded="false">
-                         <span class="gktpp-toggle-indicator" aria-hidden="true" class=""></span>
+                        <span class="gktpp-toggle-indicator" aria-hidden="true" class=""></span>
                     </button>
                </h2>
 
                <div class="gktpp-collapse-box">
                     <form class="gktpp-form contact" method="post" action="">
-                         <textarea value="" placeholder="<?php esc_attr_e( 'Help make this plugin better!' ); ?>" type="text" name="gktpp_text"></textarea>
-                         <input onkeyup="emailValidate(event)" id="gktpp-email" class="gktpp-email input" placeholder="<?php esc_attr_e( 'Email address:' ); ?>" name="gktpp_email"  />
-                         <input type="hidden" name="submitted" value="1">
-                         <input id="gktpp-submit" onclick="emailValidate(event)" name="gktpp_send_email" type="submit" class="button button-primary" value="<?php esc_attr_e( 'Submit', 'gktpp' ); ?>" />
-                         <p id="gktpp-error-message"><?php esc_html_e( 'Please enter a valid email address.' ); ?></p>
+                        <textarea value="" placeholder="<?php esc_attr_e( 'Help make this plugin better!' ); ?>" type="text" name="gktpp_text"></textarea>
+                        <input id="gktpp-email" class="gktpp-email input" placeholder="<?php esc_attr_e( 'Email address:' ); ?>" name="gktpp_email"  />
+                        <input type="hidden" name="submitted" value="1">
+                        <input id="gktpp-submit" name="gktpp_send_email" type="submit" class="button button-primary" value="<?php esc_attr_e( 'Submit', 'gktpp' ); ?>" />
+                        <p id="gktpp-error-message"><?php esc_html_e( 'Please enter a valid email address.' ); ?></p>
                     </form>
                </div>
           </div>
 
           <?php
 
-          if ( isset( $_POST['submitted'] ) ) {
+            if ( isset( $_POST['submitted'] ) ) {
 
-               if ( empty ( $_POST['gktpp_text'] ) || empty( $_POST['gktpp_email'] ) ) {
+                if ( empty ( $_POST['gktpp_text'] ) || empty( $_POST['gktpp_email'] ) ) {
                     echo "<script>alert('Please enter a valid message and email address.');</script>";
-               }
+                }
 
-               if ( isset( $_POST['gktpp_send_email'] ) && isset( $_POST['gktpp_email'] ) ) {
+                if ( isset( $_POST['gktpp_send_email'] ) && isset( $_POST['gktpp_email'] ) ) {
                     $debug_info = "\nURL: " . home_url() . "\nPHP Version: " . phpversion() . "\nWP Version: " . get_bloginfo('version');
                     wp_mail( 'sam.perrow399@gmail.com', 'Pre Party User Message', 'From: ' . strip_tags($_POST['gktpp_email']) . $debug_info . "\nMessage: " . strip_tags( $_POST['gktpp_text'] ) );
-               }
-          }
-     }
+                }
+        }
+    }
 }
 

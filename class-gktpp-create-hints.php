@@ -4,38 +4,49 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class GKTPP_Insert_To_DB {
+class GKTPP_Create_Hints {
 
 	public $as_attr = '';
 	public $type_attr = '';
 	public $crossorigin = '';
 	public $url = '';
 	public $header_str = '';
-	public $head_str = '';
+    public $head_str = '';
+    
+    // public function __construct() {
+    //     add_action( "admin_init", array( $this, 'save_data' ) );
+    // }
 
-	public function insert_data_to_db() {
-		
-		if ( ! is_admin() ) {
-			exit;
-		}
+	public function insert_data() {
 
-		global $wpdb;
+        if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
+            $hint_type = stripslashes( $_POST['hint_type'] );
+        } else {
+            return '&updated=error';
+        }
+
+        global $wpdb;
+        $post_id = (!empty($_GET['postID'])) ? $_GET['postID'] : '0';
 		$table = $wpdb->prefix . 'gktpp_table';
-		$hint_type = isset( $_POST['hint_type'] ) ? stripslashes( $_POST['hint_type'] ) : '';
-		isset( $_POST['url'] ) ? $this->configure_hint_attrs( self::santize_url( $_POST['url'] ), $hint_type ) : '';
+
+		$this->configure_hint_attrs( self::santize_url( $_POST['url'] ), $hint_type );
 
 		$this->create_str( $this->url, $hint_type, $this->as_attr, $this->type_attr, $this->crossorigin );
 
-		$sql = "INSERT INTO $table ( id, url, hint_type, status, as_attr, type_attr, crossorigin, ajax_domain, header_string, head_string ) 
-				VALUES ( null, %s, %s, 'Enabled', %s, %s, %s, %d, %s, %s )";
+		$sql = "INSERT INTO $table ( id, url, hint_type, status, as_attr, type_attr, crossorigin, ajax_domain, header_string, head_string, post_id, created_by ) 
+                VALUES ( null, %s, %s, 'Enabled', %s, %s, %s, %d, %s, %s, %s, %s )";
+                
+        $current_user = wp_get_current_user()->display_name;
 
-		$wpdb->query( 
+		$wpdb->query(
 			$wpdb->prepare( $sql, 
-			array( $this->url, $hint_type, $this->as_attr, $this->type_attr, $this->crossorigin, 0, $this->header_str, $this->head_str) ) );
-	}
+                array( $this->url, $hint_type, $this->as_attr, $this->type_attr, $this->crossorigin, 0, $this->header_str, $this->head_str, $post_id, $current_user ) ) );
+        
+        return '&updated=success';
+    }
 
 	private static function santize_url( $url ) {
-		return esc_url( preg_replace('/[^A-z0-9?=\.\/\-:\s]/', '', $url) );
+		return esc_url( preg_replace('/[^%A-z0-9?=\.\/\-:\s]/', '', $url) );
 	}
 
 	public function create_str( $url, $hint_type, $as_attr, $type_attr, $crossorigin ) {
@@ -44,25 +55,35 @@ class GKTPP_Insert_To_DB {
 
 		if ( strlen($as_attr) > 0 ) {
 			$header_as_attr = " as=$as_attr;";
-			$head_as_attr = " as='$as_attr'";
-		}
+			$head_as_attr = ' as="$as_attr"';
+		} else {
+            $header_as_attr = '';
+            $head_as_attr = '';
+        }
 
 		if ( strlen($type_attr) > 0 ) {
 			$header_type_attr = " type=$type_attr;";
-			$head_type_attr = " type='$type_attr'";
-		}
+			$head_type_attr = ' type="$type_attr"';
+		} else {
+            $header_type_attr = '';
+			$head_type_attr = '';      
+        }
 
 		if ( strlen($crossorigin) > 0 ) {
 			$header_crossorigin = " $crossorigin;";
 			$head_crossorigin = " $crossorigin";
-		}
+		} else {
+            $header_crossorigin = '';
+			$head_crossorigin = '';
+        }
 
-		$this->head_str = "<link href='$url' rel='$hint_type'$head_as_attr$head_type_attr$head_crossorigin>";
+		$this->head_str = '<link href="' . $url . '" rel="' . $hint_type . '"' . $head_as_attr . $head_type_attr . $head_crossorigin . '>';
 
-		$header = "<$url>; rel=$hint_type;$header_as_attr$header_type_attr$header_crossorigin";
+		$header = '<' . $url . '>; rel=' . $hint_type . ';' . $header_as_attr . $header_type_attr . $header_crossorigin . ',';
+        $lastSemiColonPos = strrpos($header, ';');
 
-		if ( strrpos( $header, ';') === (strlen( $header) - 1) ) {		// replace the last semi-colon and replace it with a comma.
-			$header = substr( $header, 0, strrpos( $header, ';') ) . ',';
+		if ( $lastSemiColonPos === (strlen($header) - 2) ) {		// replace the last semi-colon and replace it with a comma.
+			$header = substr( $header, 0, $lastSemiColonPos) . ',';
 		}
 
 		return $this->header_str = $header;
@@ -92,7 +113,6 @@ class GKTPP_Insert_To_DB {
 			case '.jpeg':
 			case '.png':
 			case '.svg':
-			case '.webp':
 				$this->as_attr = 'image';
 				break;
 			case '.vtt':
@@ -155,5 +175,7 @@ class GKTPP_Insert_To_DB {
 		} else {
 			return $this->url = '//' . parse_url( $url, PHP_URL_PATH );
 		}
-	}
+    }
+    
 }
+// new GKTPP_Create_Hints();

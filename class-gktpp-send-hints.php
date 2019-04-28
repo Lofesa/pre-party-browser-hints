@@ -11,26 +11,31 @@ class GKTPP_Send_Hints {
 	}
 
 	public function send_resource_hints() {
-		global $wpdb;
+        global $wpdb;
+        global $post;
+        
+        $post_ID = $post->ID;
 		$table = $wpdb->prefix . 'gktpp_table';
-		$links = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE status = %s", 'Enabled'), OBJECT );
+		$links = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE status = %s AND post_id = %s OR post_id = %s", 'Enabled', $post_ID, '0'), OBJECT );
 
 		if ( count( $links ) < 1 || ( ! is_array( $links ) ) ) {
 			return;
 		}
-		
-		$destination = get_option( 'gktpp_send_in_header' );
-		$resourceHintStr = '';
+        
+        $resourceHintStr = array( 
+            'header_string' => '',
+            'head_string' => ''
+        );
 
 		foreach ( $links as $key => $value ) {
-			$resourceHintStr .= ( $destination === 'HTTP Header' )
-				? $value->header_string
-				: $value->head_string;
+            $resourceHintStr['header_string'] .= $value->header_string;
+            $resourceHintStr['head_string'] .= $value->head_string;
 		}
 
-		return $resourceHintStr;
+        return $resourceHintStr;
 	}
 }
+
 
 function gktpp_send_hints() {
 	$send_hints = new GKTPP_Send_Hints();
@@ -38,5 +43,7 @@ function gktpp_send_hints() {
 }
 
 get_option( 'gktpp_send_in_header' ) === 'HTTP Header'
-	? header( 'Link:' . gktpp_send_hints() ) 
-	: add_action( 'wp_head', function() { printf( gktpp_send_hints() ); }, 1, 0 );
+    ? header( 'Link:' . gktpp_send_hints()['header_string'] ) 
+    : add_action( 'wp_head', function() { 
+        return printf( gktpp_send_hints()['head_string'] ); 
+    }, 1, 0 ); 
