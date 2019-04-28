@@ -19,7 +19,7 @@ class GKTPP_Ajax {
         global $wp_query;
         $post_ID = $wp_query->queried_object_id;
 
-        if (is_front_page()) {
+        if (is_home() ) {
             $post_ID = 0;
         }
 

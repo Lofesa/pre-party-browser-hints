@@ -108,7 +108,8 @@ class GKTTP_Posts {
             <input size="100" type="text" name="gktpp_insert_hints" id="gktppInsertedHints" class="gktppHidden" value=""/>
 
         <?php
-        GKTPP_Enter_Data::add_url_hint();
+        $table = new GKTPP_Enter_Data();
+        $table->add_url_hint();
     }
 
 

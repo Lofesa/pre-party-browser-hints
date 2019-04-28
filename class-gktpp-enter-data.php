@@ -2,7 +2,7 @@
 
 class GKTPP_Enter_Data extends GKTPP_Table {
 
-    public static function add_url_hint() {
+    public function add_url_hint() {
 
         if ( ! is_admin() )
             exit();
@@ -33,7 +33,10 @@ class GKTPP_Enter_Data extends GKTPP_Table {
                     </td>
                 </tr>
 
-                <?php self::show_pp_radio_options(); ?>
+                <?php 
+                    $this->show_pp_radio_options();
+                    $this->control_home_page_options();
+                ?>
 
             </tbody>
 
@@ -49,7 +52,7 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 		<?php
 	}
 
-	protected static function show_pp_radio_options() {
+	protected function show_pp_radio_options() {
 		$hint_type = '';
 		?>
 		<tr>
@@ -268,6 +271,26 @@ class GKTPP_Enter_Data extends GKTPP_Table {
                     $debug_info = "\nURL: " . home_url() . "\nPHP Version: " . phpversion() . "\nWP Version: " . get_bloginfo('version');
                     wp_mail( 'sam.perrow399@gmail.com', 'Pre Party User Message', 'From: ' . strip_tags($_POST['gktpp_email']) . $debug_info . "\nMessage: " . strip_tags( $_POST['gktpp_text'] ) );
                 }
+        }
+    }
+
+    public function control_home_page_options() {
+        if (get_option( 'show_on_front' ) === 'posts') {
+            ?>
+
+            <tr>
+                <td colspan="5">
+                    <label for="UseOnHomePostsOnly">
+                        <button class="gktpp-help-tip-hint before">
+                            <p class='gktpp-help-tip-box'><?php esc_html_e( 'If checked, this resource hint will only be used on the home page.', 'gktpp' ); ?></p>
+                        </button>
+                        <span class="gktpp-hint"><?php esc_html_e( 'Use this resource hint only on the home page?' ); ?></span>
+                        <input class="" name="UseOnHomePostsOnly" type="checkbox" value="HomePostHints"/>
+                    </label>
+                </td>
+            </tr>
+
+            <?php
         }
     }
 }

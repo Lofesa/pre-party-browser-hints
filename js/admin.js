@@ -1,10 +1,10 @@
 jQuery(document).ready(function($) {
 
-    var site = document.location.href;
+    var currentURL = document.location.href;
 
-    if (/post.php/ig.test(site)) {
+    if (/post.php/ig.test(currentURL)) {
         setPostHints();
-    } else if (/admin.php\?page=gktpp-plugin-settings/ig.test(site)) {
+    } else if (/admin.php\?page=gktpp-plugin-settings/ig.test(currentURL) && !/tab=info/i.test(currentURL)) {
         setAdminJS();
     }
 
@@ -16,6 +16,7 @@ jQuery(document).ready(function($) {
         });
 
         // double check this fn later to make sure it works properly.
+
         var gktPPshowCacheWarning = function() {
             var location = document.getElementById('gktppHintLocation');
             var plugins = document.getElementById('gktppCachePlugins');

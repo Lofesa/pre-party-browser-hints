@@ -176,7 +176,8 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
                 $this->items = $this->create_table( $this->_per_page, $current_page );
 
                 $this->display();
-                GKTPP_Enter_Data::add_url_hint();
+                $table = new GKTPP_Enter_Data();
+                $table->add_url_hint();
                 //  wp_safe_redirect( admin_url( 'admin.php?page=gktpp-plugin-settings') );
             ?>
         </form> 

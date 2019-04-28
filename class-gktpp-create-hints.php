@@ -27,9 +27,15 @@ class GKTPP_Create_Hints {
 
         global $wpdb;
         $post_id = (!empty($_GET['postID'])) ? $_GET['postID'] : '0';
-		$table = $wpdb->prefix . 'gktpp_table';
+        $table = $wpdb->prefix . 'gktpp_table';
+        
+        if (isset( $_POST['UseOnHomePostsOnly'] )) {
+            $val = 4;
+        }
 
-		$this->configure_hint_attrs( self::santize_url( $_POST['url'] ), $hint_type );
+        $clean_url = $this->santize_url( $_POST['url'] );
+
+		$this->configure_hint_attrs( $clean_url, $hint_type );
 
 		$this->create_str( $this->url, $hint_type, $this->as_attr, $this->type_attr, $this->crossorigin );
 
@@ -45,7 +51,7 @@ class GKTPP_Create_Hints {
         return '&updated=success';
     }
 
-	private static function santize_url( $url ) {
+	private function santize_url( $url ) {
 		return esc_url( preg_replace('/[^%A-z0-9?=\.\/\-:\s]/', '', $url) );
 	}
 
@@ -178,4 +184,3 @@ class GKTPP_Create_Hints {
     }
     
 }
-// new GKTPP_Create_Hints();

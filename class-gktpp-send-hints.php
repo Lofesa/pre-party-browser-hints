@@ -39,7 +39,9 @@ class GKTPP_Send_Hints {
 
 function gktpp_send_hints() {
 	$send_hints = new GKTPP_Send_Hints();
-	return $send_hints->send_resource_hints();
+    return $send_hints->send_resource_hints();
+    
+    // return new GKTPP_Send_Hints();
 }
 
 get_option( 'gktpp_send_in_header' ) === 'HTTP Header'
