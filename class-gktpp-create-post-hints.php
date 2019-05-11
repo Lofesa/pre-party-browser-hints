@@ -78,15 +78,15 @@ class GKTTP_Posts {
             $table = $wpdb->prefix . 'gktpp_table';
             
             $update_hints = json_decode(stripslashes($_POST['gktpp_update_hints']));
-            $action = $update_hints->action;
+            $update_action = $update_hints->action;
             $ids = implode( ',', array_map( 'absint', $update_hints->hintIDs ) );
             $sql = "";
 
-            if ($action === 'delete') {
+            if ($update_action === 'delete') {
                 $sql = "DELETE FROM $table WHERE id IN ($ids)";
-            } elseif ($action === 'enable') {
+            } elseif ($update_action === 'enable') {
                 $sql = "UPDATE $table SET status = 'Enabled' WHERE id IN ($ids)";
-            } elseif ($action === 'disable') {
+            } elseif ($update_action === 'disable') {
                 $sql = "UPDATE $table SET status = 'Disabled' WHERE id IN ($ids)";
             } 
 

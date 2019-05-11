@@ -28,7 +28,7 @@
 
 
 /* 
-
+May 11: loaded wp-list-table on posts pages, but there is a conflict with the static WP post list file, or something.
 To do:
 - security
 - Turn form boxes on PP page into real modal boxes

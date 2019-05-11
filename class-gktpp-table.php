@@ -4,11 +4,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'GKTPP_WP_List_Table' ) ) {
-	require_once GKTPP_PLUGIN_DIR . '/class-gktpp-wp-list-table.php';
+if ( ! class_exists( 'WP_List_Table' ) ) {
+    // require_once GKTPP_PLUGIN_DIR . '/class-gktpp-wp-list-table.php';
+    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class GKTPP_Table extends GKTPP_WP_List_Table {
+if ( ! class_exists( 'WP_Posts_List_Table' ) ) {
+    // require_once GKTPP_PLUGIN_DIR . '/class-gktpp-wp-list-table.php';
+    require_once( ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php' );
+}
+
+
+
+class GKTPP_Table extends WP_Posts_List_Table {
 
     public $_column_headers;
     public $_hints_per_page;
@@ -21,6 +29,45 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 			'plural'   => 'urls',
 			'ajax'     => false
 		) );
+    }
+
+    public function prepare_items() {
+		if ( ! is_admin() ) {
+			exit;
+        }
+
+        $this->get_proper_data();
+        
+        if ( isset( $_GET['updated'] ) ) {
+            $result = $_GET['updated'];
+            $this->show_update_result('added', $result);
+        } 
+ 
+        if (gktpp_check_pp_admin()) {
+            echo '<form method="post" action="' . admin_url('admin.php?page=gktpp-plugin-settings') . '"' . ' style="margin-top: 20px;">';
+        }
+
+        $this->_column_headers = $this->get_column_info();
+        $this->process_bulk_action();
+
+        $current_page = $this->get_pagenum();
+        $total_items  = $this->url_count();         // need to fix
+
+        $this->set_pagination_args( array(
+            'total_items' => $total_items,
+            'per_page'    => $this->_hints_per_page
+        ) );
+
+        $this->items = $this->create_table( $this->_hints_per_page, $current_page );
+
+        $this->display();
+
+        if (gktpp_check_pp_admin()) {
+            echo '</form>';
+            $table = new GKTPP_Enter_Data();
+            $table->create_new_hint_table();
+        }
+        
     }
 
     public function get_proper_data() {
@@ -134,46 +181,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 		return $sortable_columns;
     }
 
-	public function prepare_items() {
-		if ( ! is_admin() ) {
-			exit;
-		}
 
-        $this->get_proper_data();
-        
-        if ( isset( $_GET['updated'] ) ) {
-            $result = $_GET['updated'];
-            $this->show_update_result('added', $result);
-        } 
- 
-        if (gktpp_check_pp_admin()) {
-            echo '<form method="post" action="' . admin_url('admin.php?page=gktpp-plugin-settings') . '"' . ' style="margin-top: 20px;"';
-        }
-
-        $this->_column_headers = $this->get_column_info();
-        $this->process_bulk_action();
-
-        $current_page = $this->get_pagenum();
-        $total_items  = $this->url_count();         // need to fix
-
-        $this->set_pagination_args( array(
-            'total_items' => $total_items,
-            'per_page'    => $this->_hints_per_page
-        ) );
-
-        $this->items = $this->create_table( $this->_hints_per_page, $current_page );
-
-        wp_verify_nonce('_wp_http_referer');
-        
-        $this->display();
-
-        if (gktpp_check_pp_admin()) {
-            echo '</form>';
-            $table = new GKTPP_Enter_Data();
-            $table->create_new_hint_table();
-        }
-        
-    }
 
 	public function get_bulk_actions() {
 		$actions = array(
