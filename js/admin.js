@@ -82,12 +82,13 @@ jQuery(document).ready(function($) {
     // used on posts/pages
     function setPostHints() {
         var obj = {};
-        var inputElem = $('input#gktppPageResetValue');
-        var btn = $("input#gktppApply");
+        var autoHintResetElem = $('input#gktppPageResetValue');
+        var bulkApplyBtn = $("input#gktppApply");
+        var updateHintsElem = $("input#gktppUpdateHints");
         var checkboxes = $("table#gktpp-post-table tbody tr th input:checkbox");
         var selectElem = $("select#gktpp-option-select");
     
-        btn.on("click", function() {
+        bulkApplyBtn.on("click", function() {
             obj.hintIDs = [];
             $.each(checkboxes, function() {
                 if ($(this).is(":checked")) {
@@ -95,21 +96,20 @@ jQuery(document).ready(function($) {
                 }
             });
             obj.action = selectElem.val();
-            return updateElem(obj);
+            return updateElem(updateHintsElem);
         });
             
         $('input#gktppPageReset').on('click', function() {
             obj.reset = true;
-            return updateElem();
+            return updateElem(autoHintResetElem);
         });
     
-        function updateElem(obj) {
-            return inputElem.val(JSON.stringify(obj));
+        function updateElem(elem) {
+            return elem.val(JSON.stringify(obj));
         }
 
         function createHint() {
             var hintURL = $("input#gktppURL");
-            // var radioElems = $("input.gktpp-radio");
             var insertElem = $("input#gktppInsertedHints");
             var insertBtn = $("input#gktpp-submit-hints");
             var insertObj = {};

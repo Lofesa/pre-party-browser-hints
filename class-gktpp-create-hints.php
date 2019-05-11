@@ -12,7 +12,7 @@ class GKTPP_Create_Hints {
     //     add_action( "admin_init", array( $this, 'save_data' ) );
     // }
 
-	public function prepare_data($url, $hint_type, $post_id) {
+	public function create_hint($url, $hint_type, $post_id) {
 
         global $wpdb;
         $this->table = $wpdb->prefix . 'gktpp_table';
@@ -81,7 +81,7 @@ class GKTPP_Create_Hints {
             $this->as_attr = 'audio';
         } elseif ($file_type === '.mp4') {
             $this->as_attr = 'video';
-        } elseif (preg_match( '/(.jpg|.jpeg|.png|.svg)/', $file_type )) {
+        } elseif (preg_match( '/(.jpg|.jpeg|.png|.svg|.webp)/', $file_type )) {
             $this->as_attr = 'image';
         } elseif ($file_type === '.vtt') {
             $this->as_attr = 'track';

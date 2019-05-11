@@ -2,19 +2,15 @@
 
 class GKTPP_Enter_Data extends GKTPP_Table {
 
-    public function add_url_hint() {
+    public function create_new_hint_table() {
 
         if ( ! is_admin() ) {
             exit();
         }
-            
-
-        $name = (gktpp_check_pp_admin()) ? 'name="gktpp-settings-submit" type="submit"' : 'type="button"';
-        
+                    
         ?>
 
         <table id="gktpp-enter-data" class="gktpp-table fixed widefat striped" cellspacing="0">
-            <?php wp_nonce_field( 'gkt_preP-settings-page' ); ?>
 
             <thead>
                 <tr>
@@ -35,7 +31,15 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 
                 <?php 
                     $this->show_pp_radio_options();
-                    $this->control_home_page_options();
+
+                    if (gktpp_check_pp_admin()) {
+                        wp_nonce_field( 'gktpp-enter-data' );
+                        $name = 'name="gktpp-settings-submit" type="submit"';
+                        $this->control_home_page_options();
+                    } else {
+                        $name = 'type="button"';
+                    }
+                    
                 ?>
 
             </tbody>

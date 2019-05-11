@@ -23,8 +23,8 @@ class GKTPP_Options {
         );
 
         add_action( "load-{$settings_page}", array( $this, 'screen_option' ) );
+        add_action( "load-post.php", array( $this, 'screen_option' ) );
         add_action( "load-{$settings_page}", array( $this, 'save_data' ) );
-        // add_action( "add_meta_boxes", array( $this, 'screen_option' ) );
     }
 
     public function save_data() {
@@ -34,13 +34,13 @@ class GKTPP_Options {
                 return;
             }
 
-            check_admin_referer( 'gkt_preP-settings-page' );
+            check_admin_referer( 'gktpp-enter-data' );
 
             if ( gktpp_check_pp_admin() ) {
 
                 if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
                     $create_hints = new GKTPP_Create_Hints();
-                    $url_params = $create_hints->prepare_data( $_POST['url'], $_POST['hint_type'], null );
+                    $url_params = $create_hints->create_hint( $_POST['url'], $_POST['hint_type'], null );
                 }
 
             } 

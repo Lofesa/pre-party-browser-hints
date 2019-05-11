@@ -61,7 +61,7 @@ class GKTPP_Ajax {
                     $gktpp_insert_to_db = new GKTPP_Create_Hints();
 
                     if ( ! in_array( $url, $global_hints ) ) {
-                        $gktpp_insert_to_db->prepare_data( $url, 'Preconnect', $post_ID);
+                        $gktpp_insert_to_db->create_hint( $url, 'Preconnect', $post_ID);
                     }
 				}
 			}

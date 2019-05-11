@@ -7,7 +7,7 @@
  * Author: Sam Perrow
  * Author URI: https://www.linkedin.com/in/sam-perrow
  * License: GPL2
- * last edited April 29, 2019
+ * last edited May 11, 2019
  *
  * Copyright 2016  Sam Perrow  (email : sam.perrow399@gmail.com)
  *
@@ -37,6 +37,7 @@ To do:
 - Home page hint options
 - Create v 2.0.0 info/updates tab
 - Load PP files at correct times in WP admin area
+- set table hint limit on pages
 
 */
 
@@ -53,6 +54,7 @@ function gktpp_check_pp_admin() {
     global $pagenow;
     return ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'gktpp-plugin-settings' ) ? true : false;
 }
+// add_filter( 'gktpp_on_admin_page', 'gktpp_check_pp_admin' );
 
 add_action( 'init', 'gktppInitialize' );
 

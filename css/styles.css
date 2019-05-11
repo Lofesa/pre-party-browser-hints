@@ -45,16 +45,15 @@ form.gktpp-form.contact input.gktpp-email {
     border: 1px solid #ccc;
 }
 
-button.handlediv {
+/* button.handlediv {
     margin-top: -7px !important;
     margin-right: 7px !important;
-}
+} */
 
 span.gktpp-toggle-indicator:before {
     content: "\f142";
     display: inline-block;
     font: 400 20px/1 dashicons;
-    speak: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-decoration: none !important;

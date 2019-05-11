@@ -11,7 +11,7 @@ if ( ! class_exists( 'GKTPP_WP_List_Table' ) ) {
 class GKTPP_Table extends GKTPP_WP_List_Table {
 
     public $_column_headers;
-    public $_per_page;
+    public $_hints_per_page;
     private $_sql;
     public $_table;
 
@@ -31,15 +31,12 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         $user = get_current_user_id();
         $screen = get_current_screen();
         $option = $screen->get_option( 'per_page', 'option' );
-        $this->_per_page = get_user_meta( $user, $option, true );
+        $total_hints = get_user_meta( $user, $option, true );
+        $this->_hints_per_page = ($total_hints) ? $total_hints : 10;
 
-        if (!$this->_per_page || is_array($this->_per_page)) {
-            $this->_per_page = 10;
-        }
-
-        if ( gktpp_check_pp_admin() ) {
+        // if ( gktpp_check_pp_admin() ) {
             $this->_sql = "SELECT * FROM $this->_table";
-        } 
+        // } 
     }
 
 	public function create_table( $per_page, $page_number = 1 ) {
@@ -92,7 +89,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         }
 
         if (!empty($sql) > 0) {
-             $wpdb->query($sql);
+            $wpdb->query($sql);
         }
 
         $this->show_update_result($action, 'success');
@@ -149,35 +146,33 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             $this->show_update_result('added', $result);
         } 
  
-        ?>
+        if (gktpp_check_pp_admin()) {
+            echo '<form method="post" action="' . admin_url('admin.php?page=gktpp-plugin-settings') . '"' . ' style="margin-top: 20px;"';
+        }
 
-        <form method="post" action="<?php echo admin_url('admin.php?page=gktpp-plugin-settings'); ?>" style="margin-top: 20px;">
+        $this->_column_headers = $this->get_column_info();
+        $this->process_bulk_action();
+
+        $current_page = $this->get_pagenum();
+        $total_items  = $this->url_count();         // need to fix
+
+        $this->set_pagination_args( array(
+            'total_items' => $total_items,
+            'per_page'    => $this->_hints_per_page
+        ) );
+
+        $this->items = $this->create_table( $this->_hints_per_page, $current_page );
+
+        wp_verify_nonce('_wp_http_referer');
         
-            <?php
-                // elseif ( isset( $_POST['gktpp-settings-submit'] ) && ! ( isset( $_GET['action'] ) ) ) {
-                //     $this->show_update_result('', 'error');
-                // }
+        $this->display();
 
-                $this->_column_headers = $this->get_column_info();
-                $this->process_bulk_action();
-
-                $current_page = $this->get_pagenum();
-                $total_items  = $this->url_count();
-
-                $this->set_pagination_args( array(
-                    'total_items' => $total_items,
-                    'per_page'    => $this->_per_page
-                ) );
-
-                $this->items = $this->create_table( $this->_per_page, $current_page );
-
-                $this->display();
-                $table = new GKTPP_Enter_Data();
-                $table->add_url_hint();
-                //  wp_safe_redirect( admin_url( 'admin.php?page=gktpp-plugin-settings') );
-            ?>
-        </form> 
-        <?php
+        if (gktpp_check_pp_admin()) {
+            echo '</form>';
+            $table = new GKTPP_Enter_Data();
+            $table->create_new_hint_table();
+        }
+        
     }
 
 	public function get_bulk_actions() {
