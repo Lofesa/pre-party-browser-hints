@@ -462,9 +462,8 @@ class GKTPP_WP_List_Table {
 		}
 
 		echo '<label for="gktpp-option-select" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
-        echo '<select name="action" id="gktpp-option-select">';
-		// echo '<select name="actionGKTPP' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
-
+        // echo '<select name="action" id="gktpp-option-select">';
+        echo '<select name="gktppAction' . $two . '" id="gktpp-option-select">';
         
 		echo '<option value="-1">' . __( 'Bulk Actions' ) . "</option>\n";
 
@@ -478,6 +477,8 @@ class GKTPP_WP_List_Table {
 
         $buttonSubmitType = (GKTPP_ON_PP_ADMIN_PAGE) ? 'submit' : 'button';
         echo '<input type="' . $buttonSubmitType . '" id="gktppApply" class="button action" value="Apply">';
+        // submit_button( __( 'Apply' ), 'action', '', false, array( 'id' => "doaction$two" ) );
+
 
 		echo "\n";
 	}
@@ -494,12 +495,12 @@ class GKTPP_WP_List_Table {
 			return false;
 		}
 
-		if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
-			return $_REQUEST['action'];
+		if ( isset( $_REQUEST['gktppAction'] ) && -1 != $_REQUEST['gktppAction'] ) {
+			return $_REQUEST['gktppAction'];
 		}
 
-		if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
-			return $_REQUEST['action2'];
+		if ( isset( $_REQUEST['gktppAction2'] ) && -1 != $_REQUEST['gktppAction2'] ) {
+			return $_REQUEST['gktppAction2'];
 		}
 
 		return false;

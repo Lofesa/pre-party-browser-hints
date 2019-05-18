@@ -96,6 +96,7 @@ jQuery(document).ready(function($) {
                 }
             });
             obj.action = selectElem.val();
+            showMsg();
             return updateElem(updateHintsElem);
         });
             
@@ -106,6 +107,11 @@ jQuery(document).ready(function($) {
     
         function updateElem(elem) {
             return elem.val(JSON.stringify(obj));
+        }
+
+        function showMsg() {
+            var pElem = $('p#gktppSavePostMsg');
+            pElem.css({ 'visibility': 'visible' });
         }
 
         function createHint() {

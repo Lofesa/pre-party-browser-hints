@@ -11,7 +11,7 @@ class GKTTP_Posts {
         $this->data = [];
 
         add_action( 'add_meta_boxes', array( $this, 'create_meta_box') );
-        add_action( 'save_post', array( $this, 'save_hints') );     // change to 'update_post' ?
+        add_action( 'save_post', array( $this, 'save_hints') );
     }
 
     public function create_meta_box($a) {
@@ -56,13 +56,16 @@ class GKTTP_Posts {
             ?>
 
             <br/>
+            <div style="text-align: center;">
+                <input id="gktppPageReset" class="button button-primary" type="button" value="Reset Post Preconnect Hints?"/>
+            </div>
 
-            <input id="gktppPageReset" class="button button-primary" type="button" value="Reset Post Preconnect Hints"/>
             <br/>
-            <input size="100" type="text" name="gktpp_post_reset" id="gktppPageResetValue" class="gktppHidden" value=""/>
-            <input size="100" type="text" name="gktpp_update_hints" id="gktppUpdateHints" class="gktppHidden" value=""/>
-            <input size="100" type="text" name="gktpp_insert_hints" id="gktppInsertedHints" class="gktppHidden" value=""/>
+            <input size="30" type="hidden" name="gktpp_post_reset" id="gktppPageResetValue" value=""/>
+            <input size="30" type="hidden" name="gktpp_update_hints" id="gktppUpdateHints" value=""/>
+            <input size="30" type="hidden" name="gktpp_insert_hints" id="gktppInsertedHints" value=""/>
 
+            <p id="gktppSavePostMsg" style="text-align: center; font-style: italic;">Please save this post to allow your changes to take effect.</p> 
         <?php
 
     }

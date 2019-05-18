@@ -25,6 +25,11 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
     }
 
     public function column_default( $item, $column_name ) {
+        global $wpdb;
+        $postID = $item['post_id'];
+        $table = $wpdb->prefix . 'posts';
+        $sql = "SELECT post_title FROM $table WHERE ID = $postID";
+        $post_result = $wpdb->get_row($sql, OBJECT, 0);
 
 		switch ( $column_name ) {
             case 'url': 
@@ -34,11 +39,9 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             case 'status': 
                 return $item['status'];
             case 'post_name': 
-                return $item['post_id'];
+                return '<a href="/wp-admin/post.php?post=' . $item['post_id'] . '&action=edit">' . $post_result->post_title . '</a>';
             case 'created_by': 
                 return $item['created_by'];
-            case 'id': 
-                return $item['id'];
             default: 
                 return esc_html_e( 'Error', 'gktpp' );
 		}
@@ -56,9 +59,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'url'			=> __( 'URL', 'gktpp' ),
             'hint_type'		=> __( 'Hint Type', 'gktpp' ),
             'status'		=> __( 'Status', 'gktpp' ),
-            'post_name'		=> __( 'Post Name', 'gktpp' ),
             'created_by'	=> __( 'Created By', 'gktpp' ),
-            'id'	        => __( 'ID', 'gktpp' )
         );
 
         if ( GKTPP_ON_PP_ADMIN_PAGE ) {
@@ -73,7 +74,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 			'url'			=> array( 'url', true ),
 			'hint_type' 	=> array( 'hint_type', false ),
             'status'    	=> array( 'status', false ),
-            'post_name'    	=> array( 'post_name', false )
+            'created_by'    => array( 'created_by', false )
 		);
 
 		return $sortable_columns;
@@ -107,12 +108,10 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         }
 
         global $wpdb;
-
         $this->_table = $wpdb->prefix . 'gktpp_table';
 
         $screen = get_current_screen();
         $option = $screen->get_option( 'per_page', 'option' );
-
 
         $columns = $this->get_columns();
         $hidden = array();
@@ -135,7 +134,6 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 
         $this->items = $data;
 
-
         $this->set_pagination_args( array(
             'total_items' => count($total_items),         // need to fix
             'per_page'    => $this->_hints_per_page,
@@ -151,19 +149,20 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 
         $sql = "SELECT * FROM $this->_table";
 
-        if (! empty($sql)) {
-            if ( ! empty( $_REQUEST['orderby'] ) ) {
-                $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-                $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
-            }
-    
-            $sql .= " LIMIT $per_page";
-            $sql .= ' OFFSET ' . ( $current_page - 1 ) * $per_page;
-            $this->_data = $wpdb->get_results( $sql, ARRAY_A );
-        } 
-        else {
-            $this->_data = $wpdb->get_results( $sql, ARRAY_A );
+        if (! GKTPP_ON_PP_ADMIN_PAGE) {
+            global $post;
+            $post_ID = $post->ID;
+            $sql .= ' WHERE post_id = ' . $post_ID;
         }
+
+        if ( ! empty( $_REQUEST['orderby'] ) ) {
+            $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
+            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
+        }
+
+        $sql .= " LIMIT $per_page";
+        $sql .= ' OFFSET ' . ( $current_page - 1 ) * $per_page;
+        $this->_data = $wpdb->get_results( $sql, ARRAY_A );
 
 	    return $this->_data;
 	}
