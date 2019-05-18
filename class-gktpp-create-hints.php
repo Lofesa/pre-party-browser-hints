@@ -175,8 +175,8 @@ class GKTPP_Create_Hints {
             'post_id'       => $this->post_id,
             'created_by'    => $current_user ) );
 
-        // return $this->result['added'] = true;
-        return $this->results .= '&added=true';
+        return $this->result['added'] = 'success';
+        // return $this->results = 'success';
 
     }
 

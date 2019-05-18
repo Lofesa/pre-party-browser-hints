@@ -44,11 +44,14 @@ class GKTTP_Posts {
     public function create_pp_meta_box() {
         $title = get_the_title();
         ?>
-            <h3>Resource Hints Used on <?php echo $title; ?> </h3>
+            <h3>Resource Hints Used on <?php echo $title; ?></h3>
 
             <?php
                 $gktpp_table = new GKTPP_Table();
                 $gktpp_table->prepare_items();
+                // wp_verify_nonce('_wp_http_referer');
+                $gktpp_table->display();
+
             ?>
 
             <br/>

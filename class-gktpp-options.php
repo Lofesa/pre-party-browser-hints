@@ -22,8 +22,12 @@ class GKTPP_Options {
             plugins_url( '/pre-party-browser-hints/images/lightning.png' )
         );
 
-        add_action( "load-{$settings_page}", array( $this, 'screen_option' ) );
-        add_action( "load-post.php", array( $this, 'screen_option' ) );
+        if (gktpp_check_pp_admin()) {
+            add_action( "load-{$settings_page}", array( $this, 'screen_option' ) );
+        } else {
+            add_action( "load-post.php", array( $this, 'screen_option' ) );
+        }
+        
         add_action( "load-{$settings_page}", array( $this, 'save_data' ) );
     }
 
@@ -41,6 +45,8 @@ class GKTPP_Options {
                 if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
                     $create_hints = new GKTPP_Create_Hints();
                     $url_params = $create_hints->create_hint( $_POST['url'], $_POST['hint_type'], null );
+                    // $gktpp_Table = new GKTPP_Table();
+                    // $gktpp_Table->show_update_result('added', 'success' );
                 }
 
             } 
@@ -53,7 +59,10 @@ class GKTPP_Options {
         return ( 'gktpp_screen_options' === $option ) ? $value : $status;
 	}
 
-	public function admin_tabs( $current = 'insert-urls' ) {
+	public function show_admin_tabs( $current = 'insert-urls' ) {
+
+        $current_tab = (isset( $_GET['tab'] )) ? $_GET['tab'] : 'insert-urls';
+
 		$tabs = array(
             'insert-urls'   => 'Insert URLs',
             'info'          => 'Information'
@@ -61,7 +70,7 @@ class GKTPP_Options {
 
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $tabs as $tab => $name ) {
-			$class = ( $tab === $current ) ? ' nav-tab-active' : '';
+			$class = ( $tab === $current_tab ) ? ' nav-tab-active' : '';
             echo "<a class='nav-tab$class' href='?page=gktpp-plugin-settings&tab=$tab'>" . esc_html( $name ) . "</a>";
 		}
 		echo '</h2>';
@@ -71,29 +80,58 @@ class GKTPP_Options {
 		if ( ! is_admin() ) {
 			exit;
 		}
-		?>
-            <div class="wrap">
-                <h2><?php esc_html_e( 'Pre* Party Plugin Settings', 'gktpp' ); ?></h2>
-                <form method="post" action="<?php admin_url( 'admin.php?page=gktpp-plugin-settings' ); ?>">
-                    <?php ( isset( $_GET['tab'] ) ) ? $this->admin_tabs( $_GET['tab'] ) : $this->admin_tabs( 'insert-urls' ); ?>
-                </form>
-                <?php
-                    if ( gktpp_check_pp_admin() ) {
-                        return $this->display_tabs();
-                    } 
-                ?>
-            </div>
-        <?php 
+		
+        echo '<div class="wrap">';
+        echo '<h2>Pre* Party Plugin Settings</h2>';
+
+        $this->show_admin_tabs();
+    
+        $this->display_admin_content();
+        
+        echo '</div>';
+    }
+
+    public function display_list_table() {
+
+        $gktpp_table = new GKTPP_Table();
+        $gktpp_table->prepare_items();
+
+        if ( gktpp_check_pp_admin() ) {
+            
+            echo '<form id="gktpp-list-table" method="post">';
+            echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
+            $gktpp_table->display();
+            echo '</form>';
+
+        } else {
+            $gktpp_table->display();
+        }
+
+    }
+
+    public function add_conditional_form_elem() {
+        $gktpp_Enter_Data = new GKTPP_Enter_Data();
+
+        if ( gktpp_check_pp_admin() ) {
+        
+            echo '<form id="gktpp-new-hint" method="post">';
+            $gktpp_Enter_Data->create_new_hint_table();
+            echo '</form>';
+
+        } else {
+            $gktpp_Enter_Data->create_new_hint_table();
+        }
+
     }
     
-    public function display_tabs() {
+    public function display_admin_content() {
 
         $tab = isset($_GET['tab']) ? $_GET['tab'] : 'insert-urls';
-        $gktpp_table = new GKTPP_Table();
 
         switch ( $tab ) {
             case 'insert-urls':
-                $gktpp_table->prepare_items();
+                $this->display_list_table();
+                $this->add_conditional_form_elem();
                 GKTPP_Enter_Data::show_info();
                 GKTPP_Enter_Data::contact_author();
             break;
@@ -104,7 +142,9 @@ class GKTPP_Options {
             break;
 
             default:
-                $gktpp_table->prepare_items();
+                $this->display_list_table();
+                $this->add_conditional_form_elem();
+
                 GKTPP_Enter_Data::show_info();
                 GKTPP_Enter_Data::contact_author();
             break;

@@ -1,6 +1,6 @@
 <?php
 
-class GKTPP_Enter_Data extends GKTPP_Table {
+class GKTPP_Enter_Data {
 
     public function create_new_hint_table() {
 
@@ -137,14 +137,14 @@ class GKTPP_Enter_Data extends GKTPP_Table {
         global $wpdb;
 
         if ( isset( $_POST['gktpp-reset-preconnect'] ) ) {
-            update_option( 'gktpp_reset_preconnect', 'notset', 'yes' );
-            update_option( 'gktpp_autoload_preconnects', 'Yes', 'yes' );
+            update_option( 'gktpp_reset_preconnect', 'notset' );
+            update_option( 'gktpp_autoload_preconnects', 'Yes' );
         }
 
         if ( isset( $_POST['gktpp-save-user-options'] ) ) {
-            update_option( 'gktpp_autoload_preconnects', $_POST['gktpp-preconnect-status'], 'yes' );
-            update_option( 'gktpp_disable_wp_hints', $_POST['gktpp-disable-wp-hints-option'], 'no' );
-            update_option( 'gktpp_send_in_header', $_POST['gktpp-send-in-header'], 'yes' );
+            update_option( 'gktpp_autoload_preconnects', $_POST['gktpp-preconnect-status'] );
+            update_option( 'gktpp_disable_wp_hints', $_POST['gktpp-disable-wp-hints-option'] );
+            update_option( 'gktpp_send_in_header', $_POST['gktpp-send-in-header'] );
         } 
         
         $preconnect_status = get_option( 'gktpp_autoload_preconnects' );
@@ -153,7 +153,7 @@ class GKTPP_Enter_Data extends GKTPP_Table {
 
         ?>
 
-       <form class="gktpp-form" method="post" action="<?php admin_url( 'admin.php?page=gktpp-plugin-settings&_wpnonce=' );?>">
+       <form id="gktpp-admin-settings" class="gktpp-form" method="post" action="<?php admin_url( 'admin.php?page=gktpp-plugin-settings&_wpnonce=' );?>">
 
             <div class="gktpp-div">
                 <h2 class="gktpp-hint"><?php esc_html_e( 'Automatically Set Preconnect Hints?', 'gktpp' ); ?></h2>
@@ -168,7 +168,7 @@ class GKTPP_Enter_Data extends GKTPP_Table {
                     <option value="<?php echo esc_attr( 'Yes', 'gktpp' ); ?>" <?php if ( 'Yes' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e( 'Yes', 'gktpp' ); ?></option>
                     <option value="<?php echo esc_attr( 'No', 'gktpp' ); ?>" <?php if ( 'No' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e( 'No', 'gktpp' ); ?></option>
                 </select>
-                <input type="submit" name="gktpp-reset-preconnect" class="button-secondary" value="<?php esc_attr_e( 'Reset Preconnect Links', 'gktpp' ); ?>" />
+                <input type="submit" name="gktpp-reset-preconnect" class="button-secondary" value="<?php esc_attr_e( 'Reset All Preconnect Links?', 'gktpp' ); ?>" />
             </div>
 
 

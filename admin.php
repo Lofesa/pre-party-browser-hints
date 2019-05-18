@@ -75,9 +75,9 @@ function gktppInitialize() {
 
 
     // this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
-    if ( ( get_option( 'gktpp_autoload_preconnects' ) === 'Yes' ) ) {
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
-    }
+    // if ( ( get_option( 'gktpp_autoload_preconnects' ) === 'Yes' ) ) {
+    //     require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
+    // }
 }
 
 
