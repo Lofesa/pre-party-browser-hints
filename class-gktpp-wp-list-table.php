@@ -462,7 +462,7 @@ class GKTPP_WP_List_Table {
 		}
 
 		echo '<label for="gktpp-option-select" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
-        echo '<select id="gktpp-option-select">';
+        echo '<select name="action" id="gktpp-option-select">';
 		// echo '<select name="actionGKTPP' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
 
         
