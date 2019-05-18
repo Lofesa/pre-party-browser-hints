@@ -461,8 +461,11 @@ class GKTPP_WP_List_Table {
 			return;
 		}
 
-		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
-		echo '<select name="actionGKTPP' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
+		echo '<label for="gktpp-option-select" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
+        echo '<select id="gktpp-option-select">';
+		// echo '<select name="actionGKTPP' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
+
+        
 		echo '<option value="-1">' . __( 'Bulk Actions' ) . "</option>\n";
 
 		foreach ( $this->_actions as $name => $title ) {
@@ -473,7 +476,9 @@ class GKTPP_WP_List_Table {
 
 		echo "</select>\n";
 
-		submit_button( __( 'Apply' ), 'action', '', false, array( 'id' => "doaction$two" ) );
+        $buttonSubmitType = (GKTPP_ON_PP_ADMIN_PAGE) ? 'submit' : 'button';
+        echo '<input type="' . $buttonSubmitType . '" id="gktppApply" class="button action" value="Apply">';
+
 		echo "\n";
 	}
 
@@ -500,7 +505,7 @@ class GKTPP_WP_List_Table {
 		return false;
 	}
 
-	/**
+	/** 
 	 * Generate row actions div
 	 *
 	 * @since 3.1.0
@@ -595,7 +600,7 @@ class GKTPP_WP_List_Table {
 		?>
 		<label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
 		<select name="m" id="filter-by-date">
-			<option<?php selected( $m, 0 ); ?> value="0"><?php _e( 'All dates' ); ?></option>
+			<option <?php selected( $m, 0 ); ?> value="0"><?php _e( 'All dates' ); ?></option>
 		<?php
 		foreach ( $months as $arc_row ) {
 			if ( 0 == $arc_row->year ) {
@@ -1158,7 +1163,7 @@ class GKTPP_WP_List_Table {
 
 		$this->screen->render_screen_reader_content( 'heading_list' );
 		?>
-<table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
+<table id="gktpp-post-table" class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
 	<thead>
 	<tr>
 		<?php $this->print_column_headers(); ?>
@@ -1183,7 +1188,9 @@ class GKTPP_WP_List_Table {
 
 </table>
 		<?php
-		$this->display_tablenav( 'bottom' );
+        if (GKTPP_ON_PP_ADMIN_PAGE) {
+            $this->display_tablenav( 'bottom' );
+        }
 	}
 
 	/**
@@ -1204,9 +1211,9 @@ class GKTPP_WP_List_Table {
 	 * @param string $which
 	 */
 	protected function display_tablenav( $which ) {
-		if ( 'top' === $which ) {
-			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
-		}
+		// if ( 'top' === $which ) {
+		// 	wp_nonce_field( 'bulk-' . $this->_args['plural'] );
+		// }
 		?>
 	<div class="tablenav <?php echo esc_attr( $which ); ?>">
 

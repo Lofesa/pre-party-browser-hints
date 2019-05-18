@@ -11,7 +11,7 @@ class GKTTP_Posts {
         $this->data = [];
 
         add_action( 'add_meta_boxes', array( $this, 'create_meta_box') );
-        add_action( 'save_post', array( $this, 'save_hints') );
+        add_action( 'save_post', array( $this, 'save_hints') );     // change to 'update_post' ?
     }
 
     public function create_meta_box($a) {
@@ -49,9 +49,10 @@ class GKTTP_Posts {
             <?php
                 $gktpp_table = new GKTPP_Table();
                 $gktpp_table->prepare_items();
-                // wp_verify_nonce('_wp_http_referer');
                 $gktpp_table->display();
 
+                $newEnterData = new GKTPP_Enter_Data();
+                $newEnterData->create_new_hint_table();
             ?>
 
             <br/>
@@ -71,6 +72,8 @@ class GKTTP_Posts {
         // if ( $_POST['gktpp_post_reset'] || $_POST['gktpp_update_hints'] || $_POST['gktpp_insert_hints'] ) {
         //     check_admin_referer( 'gktpp_settings', 'gktpp_post_nonce' );
         // }
+        // 
+        // wp_verify_nonce('gktpp_post_nonce2', 'save_post');
 
         if ( $_POST['gktpp_post_reset'] ) {
             update_post_meta($post_id, $this->meta_preconnect_key, 'notset');
@@ -85,11 +88,11 @@ class GKTTP_Posts {
             $ids = implode( ',', array_map( 'absint', $update_hints->hintIDs ) );
             $sql = "";
 
-            if ($update_action === 'delete') {
+            if ($update_action === 'deleted') {
                 $sql = "DELETE FROM $table WHERE id IN ($ids)";
-            } elseif ($update_action === 'enable') {
+            } elseif ($update_action === 'enabled') {
                 $sql = "UPDATE $table SET status = 'Enabled' WHERE id IN ($ids)";
-            } elseif ($update_action === 'disable') {
+            } elseif ($update_action === 'disabled') {
                 $sql = "UPDATE $table SET status = 'Disabled' WHERE id IN ($ids)";
             } 
 

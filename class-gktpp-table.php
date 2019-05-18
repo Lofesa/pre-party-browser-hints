@@ -61,7 +61,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'id'	        => __( 'ID', 'gktpp' )
         );
 
-        if ( gktpp_check_pp_admin() ) {
+        if ( GKTPP_ON_PP_ADMIN_PAGE ) {
             $columns['post_name'] = __( 'Post Name', 'gktpp' );
         }
 

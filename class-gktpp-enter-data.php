@@ -7,14 +7,14 @@ class GKTPP_Enter_Data {
         if ( ! is_admin() ) {
             exit();
         }
-                    
+        // wp_create_nonce('gktpp_post_nonce');
         ?>
 
         <table id="gktpp-enter-data" class="gktpp-table fixed widefat striped" cellspacing="0">
 
             <thead>
                 <tr>
-                    <th colspan="5"><h2 style="text-align: center;"><?php esc_html_e( 'Add New Resource Hint', 'gktpp' ); ?></h2></th>
+                    <th colspan="5"><h3 style="text-align: center;"><?php esc_html_e( 'Add New Resource Hint', 'gktpp' ); ?></h3></th>
                 </tr>
             </thead>
 
@@ -32,7 +32,7 @@ class GKTPP_Enter_Data {
                 <?php 
                     $this->show_pp_radio_options();
 
-                    if (gktpp_check_pp_admin()) {
+                    if (GKTPP_ON_PP_ADMIN_PAGE) {
                         wp_nonce_field( 'gktpp-enter-data' );
                         $name = 'name="gktpp-settings-submit" type="submit"';
                         $this->control_home_page_options();

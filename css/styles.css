@@ -2,12 +2,6 @@ p#gktpp-error-message {
     display: none;
 }
 
-.gktpp-table {
-    width: 95%;
-    max-width: 750px;
-    margin: 0 auto 30px;
-}
-
 .gktpp-collapse-btn:hover {
     cursor: pointer;
 }
@@ -61,6 +55,12 @@ span.gktpp-toggle-indicator:before {
 
 span.gktpp-toggle-indicator.active:before {
     transform: rotate(180deg);
+}
+
+.gktpp-table {
+    width: 95%;
+    max-width: 750px;
+    margin: 15px auto;
 }
 
 table.gktpp-table tbody tr {

@@ -49,12 +49,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'GKTPP_PLUGIN', __FILE__ );
 define( 'GKTPP_VERSION', '1.6.0' );
 define( 'GKTPP_PLUGIN_DIR', untrailingslashit( dirname( GKTPP_PLUGIN ) ) );
+define( 'GKTPP_ON_PP_ADMIN_PAGE', gktpp_check_pp_admin() );
 
 function gktpp_check_pp_admin() {
     global $pagenow;
     return ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'gktpp-plugin-settings' ) ? true : false;
 }
-// add_filter( 'gktpp_on_admin_page', 'gktpp_check_pp_admin' );
 
 add_action( 'init', 'gktppInitialize' );
 
@@ -73,11 +73,10 @@ function gktppInitialize() {
 		require_once GKTPP_PLUGIN_DIR . '/class-gktpp-send-hints.php';
     }
 
-
     // this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
-    // if ( ( get_option( 'gktpp_autoload_preconnects' ) === 'Yes' ) ) {
-    //     require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
-    // }
+    if ( ( get_option( 'gktpp_autoload_preconnects' ) === 'Yes' ) ) {
+        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
+    }
 }
 
 
@@ -91,7 +90,7 @@ function gktpp_register_admin_files() {
     wp_register_style( 'gktpp_styles_css', plugin_dir_url( __FILE__ ) . 'css/styles.css', null, GKTPP_VERSION, 'all' );
     wp_register_script( 'gktpp_admin_js', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery'), GKTPP_VERSION, true );
 
-    if ( $pagenow === 'post.php' || gktpp_check_pp_admin() ) {
+    if ( $pagenow === 'post.php' || GKTPP_ON_PP_ADMIN_PAGE ) {
         wp_enqueue_script( 'gktpp_admin_js' );
         wp_enqueue_style( 'gktpp_styles_css' );
     }

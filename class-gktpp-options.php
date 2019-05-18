@@ -22,7 +22,7 @@ class GKTPP_Options {
             plugins_url( '/pre-party-browser-hints/images/lightning.png' )
         );
 
-        if (gktpp_check_pp_admin()) {
+        if (GKTPP_ON_PP_ADMIN_PAGE) {
             add_action( "load-{$settings_page}", array( $this, 'screen_option' ) );
         } else {
             add_action( "load-post.php", array( $this, 'screen_option' ) );
@@ -38,9 +38,9 @@ class GKTPP_Options {
                 return;
             }
 
-            check_admin_referer( 'gktpp-enter-data' );
+            // check_admin_referer( 'gktpp-enter-data' );
 
-            if ( gktpp_check_pp_admin() ) {
+            if ( GKTPP_ON_PP_ADMIN_PAGE ) {
 
                 if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
                     $create_hints = new GKTPP_Create_Hints();
@@ -96,9 +96,9 @@ class GKTPP_Options {
         $gktpp_table = new GKTPP_Table();
         $gktpp_table->prepare_items();
 
-        if ( gktpp_check_pp_admin() ) {
+        if ( GKTPP_ON_PP_ADMIN_PAGE ) {
             
-            echo '<form id="gktpp-list-table" method="post">';
+            echo '<form id="gktpp-list-table" method="post" action="/wp-admin/admin.php?page=gktpp-plugin-settings">';
             echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
             $gktpp_table->display();
             echo '</form>';
@@ -112,15 +112,15 @@ class GKTPP_Options {
     public function add_conditional_form_elem() {
         $gktpp_Enter_Data = new GKTPP_Enter_Data();
 
-        if ( gktpp_check_pp_admin() ) {
+        if ( GKTPP_ON_PP_ADMIN_PAGE ) {
         
-            echo '<form id="gktpp-new-hint" method="post">';
+            echo '<form id="gktpp-new-hint" method="post" action="/wp-admin/admin.php?page=gktpp-plugin-settings">';
             $gktpp_Enter_Data->create_new_hint_table();
             echo '</form>';
-
-        } else {
-            $gktpp_Enter_Data->create_new_hint_table();
-        }
+        } 
+        // else {
+        //     $gktpp_Enter_Data->create_new_hint_table();
+        // }
 
     }
     
