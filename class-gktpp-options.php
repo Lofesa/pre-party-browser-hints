@@ -45,8 +45,6 @@ class GKTPP_Options {
                 if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
                     $create_hints = new GKTPP_Create_Hints();
                     $url_params = $create_hints->create_hint( $_POST['url'], $_POST['hint_type'], null );
-                    // $gktpp_Table = new GKTPP_Table();
-                    // $gktpp_Table->show_update_result('added', 'success' );
                 }
 
             } 
@@ -97,31 +95,21 @@ class GKTPP_Options {
         $gktpp_table->prepare_items();
 
         if ( GKTPP_ON_PP_ADMIN_PAGE ) {
-            
-            echo '<form id="gktpp-list-table" method="post" action="admin.php?page=gktpp-plugin-settings">';
-            echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
+            echo '<form id="gktpp-list-table" method="post" action="' . admin_url( 'admin.php?page=gktpp-plugin-settings' ) . '">';
+            // echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
             $gktpp_table->display();
             echo '</form>';
-
-        } else {
-            $gktpp_table->display();
-        }
-
+        } 
     }
 
     public function add_conditional_form_elem() {
         $gktpp_Enter_Data = new GKTPP_Enter_Data();
 
         if ( GKTPP_ON_PP_ADMIN_PAGE ) {
-        
-            echo '<form id="gktpp-new-hint" method="post" action="admin.php?page=gktpp-plugin-settings">';
+            echo '<form id="gktpp-new-hint" method="post" action="' . admin_url( 'admin.php?page=gktpp-plugin-settings' ) . '">';
             $gktpp_Enter_Data->create_new_hint_table();
             echo '</form>';
         } 
-        // else {
-        //     $gktpp_Enter_Data->create_new_hint_table();
-        // }
-
     }
     
     public function display_admin_content() {

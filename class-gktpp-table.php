@@ -120,7 +120,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 
         $this->_column_headers = array($columns, $hidden, $sortable);
 
-        // $this->process_bulk_action();
+        $this->process_bulk_action();
 
         $user = get_current_user_id();
 
