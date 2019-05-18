@@ -98,7 +98,7 @@ class GKTPP_Options {
 
         if ( GKTPP_ON_PP_ADMIN_PAGE ) {
             
-            echo '<form id="gktpp-list-table" method="post" action="/wp-admin/admin.php?page=gktpp-plugin-settings">';
+            echo '<form id="gktpp-list-table" method="post" action="admin.php?page=gktpp-plugin-settings">';
             echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
             $gktpp_table->display();
             echo '</form>';
@@ -114,7 +114,7 @@ class GKTPP_Options {
 
         if ( GKTPP_ON_PP_ADMIN_PAGE ) {
         
-            echo '<form id="gktpp-new-hint" method="post" action="/wp-admin/admin.php?page=gktpp-plugin-settings">';
+            echo '<form id="gktpp-new-hint" method="post" action="admin.php?page=gktpp-plugin-settings">';
             $gktpp_Enter_Data->create_new_hint_table();
             echo '</form>';
         } 
