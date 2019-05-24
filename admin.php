@@ -39,6 +39,10 @@ To do:
 - Load PP files at correct times in WP admin area
 - set table hint limit on pages
 
+
+feedback:
+1) I forgot to put a notice that appears under that button, like I do have for the “reset preconnects” button. (i’ll see if I can hack a way to initiate the “save post” hook when hitting that button also, b/c it would be annoying having to click twice)
+2) allow meta boxes to be visible on custom pages/posts
 */
 
 // prevent direct file access

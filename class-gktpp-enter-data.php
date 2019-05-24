@@ -34,11 +34,10 @@ class GKTPP_Enter_Data {
 
                     if (GKTPP_ON_PP_ADMIN_PAGE) {
                         wp_nonce_field( 'gktpp-enter-data' );
-                        $name = 'name="gktpp-settings-submit" type="submit"';
                         $this->control_home_page_options();
-                    } else {
-                        $name = 'type="button"';
-                    }
+                    } 
+
+
                     
                 ?>
 
@@ -47,7 +46,7 @@ class GKTPP_Enter_Data {
             <tfoot>
                 <tr>                  
                     <th colspan="5" style="text-align: center; padding: 20px 0;">
-                        <input id="gktpp-submit-hints" <?php echo $name; ?> class="button button-primary" value="<?php esc_attr_e( 'Insert Resource Hint', 'gktpp' ); ?>" />
+                        <input id="gktpp-submit-hints" name="gktpp-settings-submit" type="submit" class="button button-primary" value="<?php esc_attr_e( 'Insert Resource Hint', 'gktpp' ); ?>" />
                     </th>
                 </tr>
             </tfoot>

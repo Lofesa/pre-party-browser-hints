@@ -469,17 +469,11 @@ class GKTPP_WP_List_Table {
 
 		foreach ( $this->_actions as $name => $title ) {
 			$class = 'edit' === $name ? ' class="hide-if-no-js"' : '';
-
 			echo "\t" . '<option value="' . $name . '"' . $class . '>' . $title . "</option>\n";
 		}
 
 		echo "</select>\n";
-
-        $buttonSubmitType = (GKTPP_ON_PP_ADMIN_PAGE) ? 'submit' : 'button';
-        echo '<input type="' . $buttonSubmitType . '" id="gktppApply" class="button action" value="Apply">';
-        // submit_button( __( 'Apply' ), 'action', '', false, array( 'id' => "doaction$two" ) );
-
-
+        echo '<input type="submit" id="gktppApply" class="button action" value="Apply">';
 		echo "\n";
 	}
 

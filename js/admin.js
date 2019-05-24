@@ -8,6 +8,18 @@ jQuery(document).ready(function($) {
         setAdminJS();
     }
 
+    function validateHint(e) {
+        var btn = document.getElementById('gktpp-submit-hints');
+        var inputElem = document.getElementById('gktppURL');
+    
+        // btn.addEventListener("click", function(e) {
+            if (inputElem.value.length === 0) {
+                e.preventDefault();
+                alert('Please enter a proper URL.');
+            }
+        // });
+    }
+
     function setAdminJS() {
         var clickTarget = $('.gktpp-collapse-btn');
         clickTarget.on('click', function() {
@@ -30,17 +42,7 @@ jQuery(document).ready(function($) {
             });
         }();
 
-        var asdf = function() {
-            var btn = document.getElementById('gktpp-submit-hints');
-            var inputElem = document.getElementById('gktppURL');
-        
-            btn.addEventListener("click", function(e) {
-                if (inputElem.value.length === 0) {
-                    e.preventDefault();
-                    alert('Please enter a proper URL.');
-                }
-            });
-        }();
+
 
         $('input#gktpp-email').on("keyup", function(e) {
             return emailValidate(e);
@@ -96,7 +98,7 @@ jQuery(document).ready(function($) {
                 }
             });
             obj.action = selectElem.val();
-            showMsg();
+            // showMsg();
             return updateElem(updateHintsElem);
         });
             
@@ -109,10 +111,10 @@ jQuery(document).ready(function($) {
             return elem.val(JSON.stringify(obj));
         }
 
-        function showMsg() {
-            var pElem = $('p#gktppSavePostMsg');
-            pElem.css({ 'visibility': 'visible' });
-        }
+        // function showMsg() {
+        //     var pElem = $('p#gktppSavePostMsg');
+        //     pElem.css({ 'visibility': 'visible' });
+        // }
 
         function createHint() {
             var hintURL = $("input#gktppURL");
@@ -120,7 +122,8 @@ jQuery(document).ready(function($) {
             var insertBtn = $("input#gktpp-submit-hints");
             var insertObj = {};
 
-            insertBtn.on("click", function() {
+            insertBtn.on("click", function(e) {
+                validateHint(e);
                 insertObj.url = hintURL.val();
 
                 $.each($("input.gktpp-radio:checked"), function() {

@@ -57,15 +57,15 @@ class GKTTP_Posts {
 
             <br/>
             <div style="text-align: center;">
-                <input id="gktppPageReset" class="button button-primary" type="button" value="Reset Post Preconnect Hints?"/>
+                <input id="gktppPageReset" class="button button-primary" type="submit" value="Reset Post Preconnect Hints?"/>
             </div>
 
             <br/>
-            <input size="30" type="hidden" name="gktpp_post_reset" id="gktppPageResetValue" value=""/>
-            <input size="30" type="hidden" name="gktpp_update_hints" id="gktppUpdateHints" value=""/>
-            <input size="30" type="hidden" name="gktpp_insert_hints" id="gktppInsertedHints" value=""/>
+            <input size="30" type="" name="gktpp_post_reset" id="gktppPageResetValue" value=""/>
+            <input size="30" type="" name="gktpp_update_hints" id="gktppUpdateHints" value=""/>
+            <input size="30" type="" name="gktpp_insert_hints" id="gktppInsertedHints" value=""/>
 
-            <p id="gktppSavePostMsg" style="text-align: center; font-style: italic;">Please save this post to allow your changes to take effect.</p> 
+            <!-- <p id="gktppSavePostMsg" style="text-align: center; font-style: italic;">Please save this post to allow your changes to take effect.</p>  -->
         <?php
 
     }
