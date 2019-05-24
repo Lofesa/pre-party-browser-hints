@@ -7,7 +7,7 @@
  * Author: Sam Perrow
  * Author URI: https://www.linkedin.com/in/sam-perrow
  * License: GPL2
- * last edited May 11, 2019
+ * last edited May 23, 2019
  *
  * Copyright 2016  Sam Perrow  (email : sam.perrow399@gmail.com)
  *
@@ -28,21 +28,16 @@
 
 
 /* 
-May 11: loaded wp-list-table on posts pages, but there is a conflict with the static WP post list file, or something.
 To do:
 - security
 - Turn form boxes on PP page into real modal boxes
 - set and update hints for the home page, if it is set to display only the latest posts. 
-- fix update notices
 - Home page hint options
 - Create v 2.0.0 info/updates tab
 - Load PP files at correct times in WP admin area
-- set table hint limit on pages
-
 
 feedback:
-1) I forgot to put a notice that appears under that button, like I do have for the “reset preconnects” button. (i’ll see if I can hack a way to initiate the “save post” hook when hitting that button also, b/c it would be annoying having to click twice)
-2) allow meta boxes to be visible on custom pages/posts
+1) allow meta boxes to be visible on custom pages/posts
 */
 
 // prevent direct file access
