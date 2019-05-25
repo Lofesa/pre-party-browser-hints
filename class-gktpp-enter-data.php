@@ -14,14 +14,20 @@ class GKTPP_Enter_Data {
 
             <thead>
                 <tr>
-                    <th colspan="5"><h3 style="text-align: center;"><?php esc_html_e( 'Add New Resource Hint', 'gktpp' ); ?></h3></th>
+                    <th colspan="5">
+                        <h3 style="text-align: center;"><?php esc_html_e( 'Add New Resource Hint', 'gktpp' ); ?></h3>
+                    </th>
                 </tr>
             </thead>
 
             <tbody>
 
                 <tr>
-                    <td style="text-align: right;" colspan="1"><?php esc_html_e( 'URL:', 'gktpp' ); ?></td>
+                    <td style="text-align: left; padding-left: 20px;" colspan="1"><?php esc_html_e( 'URL:', 'gktpp' ); ?>
+                        <button class="gktpp-help-tip-hint after">
+                            <p class='gktpp-help-tip-box'><?php esc_html_e( 'Specify the domain name for DNS-Prefetch and Preconnect hints, and a full URL for Prerender, Prefetch, and Preload.', 'gktpp' ); ?></p>
+                        </button>
+                    </td>
                     <td style="width: 100%;" colspan="4">
                         <label for="url">
                             <input id="gktppURL" placeholder="<?php esc_attr_e( 'Enter valid domain or URL...', 'gktpp' ); ?>" class="widefat" name="url" />
@@ -35,10 +41,7 @@ class GKTPP_Enter_Data {
                     if (GKTPP_ON_PP_ADMIN_PAGE) {
                         wp_nonce_field( 'gktpp-enter-data' );
                         $this->control_home_page_options();
-                    } 
-
-
-                    
+                    }
                 ?>
 
             </tbody>

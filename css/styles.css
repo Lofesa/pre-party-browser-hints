@@ -86,13 +86,15 @@ div.gktpp-code-block {
     max-width: 95%;
 }
 
-table.urls th#url {
-    width: 50%;
+table#gktpp-post-table th#url {
+    width: 25%;
 }
 
-table.urls thead tr th {
+/* table.urls thead tr th {
     max-width: 10% !important;
-}
+} */
+
+
 
 /* Hover hints */
 .gktpp-hint {

@@ -1,6 +1,7 @@
 jQuery(document).ready(function($) {
 
     var currentURL = document.location.href;
+    var URLElem = document.getElementById('gktppURL');
 
     if (/post.php/ig.test(currentURL)) {
         setPostHints();
@@ -8,16 +9,34 @@ jQuery(document).ready(function($) {
         setAdminJS();
     }
 
-    function validateHint(e) {
-        var btn = document.getElementById('gktpp-submit-hints');
-        var inputElem = document.getElementById('gktppURL');
-    
-        // btn.addEventListener("click", function(e) {
-            if (inputElem.value.length === 0) {
+    createHint();
+    function createHint() {
+        var insertElem = $("input#gktppInsertedHints");
+        var insertBtn = $("input#gktpp-submit-hints");
+        var insertObj = {};
+
+        insertBtn.on("click", function(e) {
+            var hintType = getHintType();
+
+            if (URLElem.value.length === 0 || !hintType) {
                 e.preventDefault();
-                alert('Please enter a proper URL.');
-            }
-        // });
+                alert('Please enter a proper URL and hint type.');
+            } 
+            
+            else if (/post.php/ig.test(currentURL)) {
+                insertObj.url = URLElem.value;
+                $.each($("input.gktpp-radio:checked"), function() {
+                    insertObj.type = $(this).val();
+                });
+                return insertElem.val( JSON.stringify(insertObj));
+            } 
+
+
+        });
+    }
+
+    function getHintType() {
+        return $("input.gktpp-radio:checked").val();
     }
 
     function setAdminJS() {
@@ -98,7 +117,6 @@ jQuery(document).ready(function($) {
                 }
             });
             obj.action = selectElem.val();
-            // showMsg();
             return updateElem(updateHintsElem);
         });
             
@@ -110,34 +128,7 @@ jQuery(document).ready(function($) {
         function updateElem(elem) {
             return elem.val(JSON.stringify(obj));
         }
-
-        // function showMsg() {
-        //     var pElem = $('p#gktppSavePostMsg');
-        //     pElem.css({ 'visibility': 'visible' });
-        // }
-
-        function createHint() {
-            var hintURL = $("input#gktppURL");
-            var insertElem = $("input#gktppInsertedHints");
-            var insertBtn = $("input#gktpp-submit-hints");
-            var insertObj = {};
-
-            insertBtn.on("click", function(e) {
-                validateHint(e);
-                insertObj.url = hintURL.val();
-
-                $.each($("input.gktpp-radio:checked"), function() {
-                    insertObj.type = $(this).val();
-                });
-
-                return insertElem.val( JSON.stringify(insertObj));
-            });
-        }
-        createHint();
+       
     }
 
-    
-
 });
-
-

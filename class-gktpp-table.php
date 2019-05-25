@@ -36,6 +36,12 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
                 return $item['url'];
             case 'hint_type': 
                 return $item['hint_type'];
+            case 'as_attr': 
+                return $item['as_attr'];
+            case 'type_attr': 
+                return $item['type_attr'];
+            case 'crossorigin': 
+                return $item['crossorigin'];
             case 'status': 
                 return $item['status'];
             case 'post_name': 
@@ -58,6 +64,9 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'cb'			=> '<input type="checkbox" />',
             'url'			=> __( 'URL', 'gktpp' ),
             'hint_type'		=> __( 'Hint Type', 'gktpp' ),
+            'as_attr'		=> __( 'As Attr', 'gktpp' ),
+            'type_attr'		=> __( 'Type Attr', 'gktpp' ),
+            'crossorigin'   => __( 'Crossorigin', 'gktpp' ),
             'status'		=> __( 'Status', 'gktpp' ),
             'created_by'	=> __( 'Created By', 'gktpp' ),
         );
@@ -72,7 +81,10 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 	public function get_sortable_columns() {
 		$sortable_columns = array(
 			'url'			=> array( 'url', true ),
-			'hint_type' 	=> array( 'hint_type', false ),
+            'hint_type' 	=> array( 'hint_type', false ),
+            'as_attr'       => array( 'as_attr', false ),
+            'type_attr'     => array( 'type_attr', false ),
+            'crossorigin'   => array( 'crossorigin', false ),
             'status'    	=> array( 'status', false ),
             'created_by'    => array( 'created_by', false )
 		);
