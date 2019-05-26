@@ -137,7 +137,7 @@ jQuery(document).ready(function($) {
 });
 
 
-// jQuery(document).ready(function(){ 
-//     console.log( pagenow );
-//     postboxes.add_postbox_toggles(pagenow);
-//  });
+jQuery(document).ready(function(){ 
+    console.log( pagenow );
+    postboxes.add_postbox_toggles(pagenow);
+ });

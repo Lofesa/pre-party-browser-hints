@@ -17,7 +17,7 @@ class GKTPP_Send_Hints {
         $post_ID = (string) ($post->ID);
 
         if (is_home()) {
-            $post_ID = '-1';
+            $post_ID = 'HomePostPage';
         }
 
 		$table = $wpdb->prefix . 'gktpp_table';
@@ -45,8 +45,6 @@ class GKTPP_Send_Hints {
 function gktpp_send_hints() {
 	$send_hints = new GKTPP_Send_Hints();
     return $send_hints->send_resource_hints();
-    
-    // return new GKTPP_Send_Hints();
 }
 
 get_option( 'gktpp_send_in_header' ) === 'HTTP Header'

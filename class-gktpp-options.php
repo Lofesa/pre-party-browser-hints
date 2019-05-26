@@ -148,7 +148,6 @@ class GKTPP_Options {
 
 	public function screen_option() {
 
-
         $this->register_meta_boxes();
 
 		$option = 'per_page';

@@ -27,36 +27,39 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
     public function column_default( $item, $column_name ) {
         global $wpdb;
         $postID = $item['post_id'];
-        $table = $wpdb->prefix . 'posts';
-        $sql = "SELECT post_title FROM $table WHERE ID = $postID";
-        $post_result = $wpdb->get_row($sql, OBJECT, 0);
 
-		switch ( $column_name ) {
-            case 'url': 
+        if (! preg_match('/0|HomePostPage/', $postID) ) {
+            $table = $wpdb->prefix . 'posts';
+            $sql = "SELECT post_title FROM $table WHERE ID = $postID";
+            $post_result = $wpdb->get_row($sql, OBJECT, 0);
+            $link = '<a href="/wp-admin/post.php?post=' . $item['post_id'] . '&action=edit">' . $post_result->post_title . '</a>';
+        }
+
+		switch ($column_name) {
+            case 'url':
                 return $item['url'];
-            case 'hint_type': 
+            case 'hint_type':
                 return $item['hint_type'];
-            case 'as_attr': 
-                return $item['as_attr'];
-            case 'type_attr': 
-                return $item['type_attr'];
-            case 'crossorigin': 
-                return $item['crossorigin'];
+            case 'as_attr':
+                return ($item['as_attr']) ? $item['as_attr'] : '-';
+            case 'type_attr':
+                return ($item['type_attr']) ? $item['type_attr'] : '-';
+            case 'crossorigin':
+                return ($item['crossorigin']) ? $item['crossorigin'] : '-';
             case 'status': 
                 return $item['status'];
-            case 'post_name': 
-                return '<a href="/wp-admin/post.php?post=' . $item['post_id'] . '&action=edit">' . $post_result->post_title . '</a>';
+            case 'post_name':
+                return ($postID === 'HomePostPage') ? 'Home' : (($postID === '0') ? 'Global' : $link);
             case 'created_by': 
                 return $item['created_by'];
-            default: 
+            default:
                 return esc_html_e( 'Error', 'gktpp' );
 		}
     }
-    
 
 
-    public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="urlValue[]" value="%1$s" />', $item['id'] );
+    public function column_cb($item) {
+		return sprintf('<input type="checkbox" name="urlValue[]" value="%1$s"/>', $item['id']);
     }
     
     public function get_columns() {
@@ -71,8 +74,8 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'created_by'	=> __( 'Created By', 'gktpp' ),
         );
 
-        if ( GKTPP_CHECK_PAGE === 'ppAdmin') {
-            $columns['post_name'] = __( 'Post Name', 'gktpp' );
+        if (GKTPP_CHECK_PAGE === 'ppAdmin') {
+            $columns['post_name'] = __('Post Name', 'gktpp');
         }
 
         return $columns;
@@ -147,7 +150,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         $this->items = $data;
 
         $this->set_pagination_args( array(
-            'total_items' => count($total_items),         // need to fix
+            'total_items' => count($total_items),
             'per_page'    => $this->_hints_per_page,
             'total_pages' => ceil($total_items/$this->_hints_per_page)
         ) );
@@ -164,7 +167,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         if (GKTPP_CHECK_PAGE === 'postEdit') {
             global $post;
             $post_ID = $post->ID;
-            $sql .= ' WHERE post_id = ' . $post_ID;
+            $sql .= ' WHERE post_id = ' . $post_ID . ' OR post_id = "0"';
         }
 
         if ( ! empty( $_REQUEST['orderby'] ) ) {
