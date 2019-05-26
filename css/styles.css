@@ -44,18 +44,18 @@ form.gktpp-form.contact input.gktpp-email {
     margin-right: 7px !important;
 } */
 
-span.gktpp-toggle-indicator:before {
+/* span.gktpp-toggle-indicator:before {
     content: "\f142";
     display: inline-block;
     font: 400 20px/1 dashicons;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-decoration: none !important;
-}
+} */
 
-span.gktpp-toggle-indicator.active:before {
+/* span.gktpp-toggle-indicator.active:before {
     transform: rotate(180deg);
-}
+} */
 
 .gktpp-table {
     width: 95%;

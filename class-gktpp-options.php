@@ -7,14 +7,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class GKTPP_Options {
 
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'settings_page_init' ) );
+        add_action( 'admin_menu', array( $this, 'settings_page_init' ) );
         add_filter( 'set-screen-option', array( $this, 'apply_wp_screen_options' ), 1, 3 );
+
     }
     
 	public function settings_page_init() {
 
         $settings_page = add_menu_page(
-            ' Pre* Party Settings',
+            'Pre* Party Settings',
             'Pre* Party',
             'manage_options',
             'gktpp-plugin-settings',
@@ -22,13 +23,14 @@ class GKTPP_Options {
             plugins_url( '/pre-party-browser-hints/images/lightning.png' )
         );
 
-        if (GKTPP_ON_PP_ADMIN_PAGE) {
+        if (GKTPP_CHECK_PAGE === 'ppAdmin') {
             add_action( "load-{$settings_page}", array( $this, 'screen_option' ) );
-        } else {
+            add_action( "load-{$settings_page}", array( $this, 'save_data' ) );
+        } 
+        else {
             add_action( "load-post.php", array( $this, 'screen_option' ) );
         }
         
-        add_action( "load-{$settings_page}", array( $this, 'save_data' ) );
     }
 
     public function save_data() {
@@ -40,7 +42,7 @@ class GKTPP_Options {
 
             // check_admin_referer( 'gktpp-enter-data' );
 
-            if ( GKTPP_ON_PP_ADMIN_PAGE ) {
+            if ( GKTPP_CHECK_PAGE === 'ppAdmin') {
 
                 if (isset( $_POST['hint_type']) && isset( $_POST['url'])) {
                     $create_hints = new GKTPP_Create_Hints();
@@ -80,12 +82,15 @@ class GKTPP_Options {
 		}
 		
         echo '<div class="wrap">';
-        echo '<h2>Pre* Party Plugin Settings</h2>';
+        // echo '<h2>Pre* Party Plugin Settings</h2>';
+        $obj = get_current_screen();
 
         $this->show_admin_tabs();
-    
+
         $this->display_admin_content();
-        
+
+        do_meta_boxes('toplevel_page_gktpp-plugin-settings', 'normal', $obj);
+
         echo '</div>';
     }
 
@@ -94,7 +99,7 @@ class GKTPP_Options {
         $gktpp_table = new GKTPP_Table();
         $gktpp_table->prepare_items();
 
-        if ( GKTPP_ON_PP_ADMIN_PAGE ) {
+        if ( GKTPP_CHECK_PAGE === 'ppAdmin') {
             echo '<form id="gktpp-list-table" method="post" action="' . admin_url( 'admin.php?page=gktpp-plugin-settings' ) . '">';
             // echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
             $gktpp_table->display();
@@ -105,7 +110,7 @@ class GKTPP_Options {
     public function add_conditional_form_elem() {
         $gktpp_Enter_Data = new GKTPP_Enter_Data();
 
-        if ( GKTPP_ON_PP_ADMIN_PAGE ) {
+        if ( GKTPP_CHECK_PAGE === 'ppAdmin') {
             echo '<form id="gktpp-new-hint" method="post" action="' . admin_url( 'admin.php?page=gktpp-plugin-settings' ) . '">';
             $gktpp_Enter_Data->create_new_hint_table();
             echo '</form>';
@@ -121,7 +126,7 @@ class GKTPP_Options {
                 $this->display_list_table();
                 $this->add_conditional_form_elem();
                 GKTPP_Enter_Data::show_info();
-                GKTPP_Enter_Data::contact_author();
+                // GKTPP_Enter_Data::contact_author();
             break;
 
             case 'info':
@@ -134,7 +139,7 @@ class GKTPP_Options {
                 $this->add_conditional_form_elem();
 
                 GKTPP_Enter_Data::show_info();
-                GKTPP_Enter_Data::contact_author();
+                // GKTPP_Enter_Data::contact_author();
             break;
         }
 
@@ -142,6 +147,10 @@ class GKTPP_Options {
     }
 
 	public function screen_option() {
+
+
+        $this->register_meta_boxes();
+
 		$option = 'per_page';
 		$args = array(
 			'label'   => 'URLs',
@@ -152,7 +161,23 @@ class GKTPP_Options {
 		add_screen_option( $option, $args );
 
 		$this->resource_obj = new GKTPP_Table();
-	}
+    }
+    
+    public function register_meta_boxes() {
+        $id = 'gktpp_admin_meta';
+		$title =  'Pre* Party Resource Hints2';
+        $callback = array( $this, 'create_pp_meta_box2' );
+        return add_meta_box( $id, $title, $callback, 'toplevel_page_gktpp-plugin-settings', 'normal', 'default', '' );
+    }
+
+    public function create_pp_meta_box2() {
+        // $meta_boxes = do_meta_boxes('gktpp-plugin-settings', 'side');
+
+        GKTPP_Enter_Data::contact_author();
+        // echo '<h2>test</h2>';
+    }
+
+
 
 }
 

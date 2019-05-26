@@ -14,24 +14,26 @@ class GKTTP_Posts {
         add_action( 'save_post', array( $this, 'save_hints') );
     }
 
-    public function create_meta_box($a) {
+    public function create_meta_box() {
 
         global $wpdb;
+        global $post;
         $table = $wpdb->prefix . 'gktpp_table';
 
-        $post_id = (string) $_GET['post'];
-        $sql = "SELECT * FROM $table WHERE post_id = $post_id OR post_id = 0";
+        // wp_nonce_field( basename( __FILE__ ), 'gktpp_post_meta' );
+
+        $sql = "SELECT * FROM $table WHERE post_id = $post->ID OR post_id = 0";
 
         $this->data = $wpdb->get_results($sql, ARRAY_A);
 
         $id = 'gktpp_post_meta';
 		$title =  'Pre* Party Resource Hints';
-        // $callback = array( $this, 'create_pp_meta_box' );
         $callback = array( $this, 'create_pp_meta_box' );
 		$context = 'normal';
 		$priority = 'high';
 		$callback_args = '';
-        $screens = array( 'post', 'page' );
+        $screens = get_post_types();
+
 
 		foreach ( $screens as $screen ) {
 			add_meta_box( $id, $title, $callback, $screen, $context,

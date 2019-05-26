@@ -38,7 +38,7 @@ class GKTPP_Enter_Data {
                 <?php 
                     $this->show_pp_radio_options();
 
-                    if (GKTPP_ON_PP_ADMIN_PAGE) {
+                    if (GKTPP_CHECK_PAGE) {
                         wp_nonce_field( 'gktpp-enter-data' );
                         $this->control_home_page_options();
                     }
@@ -123,7 +123,7 @@ class GKTPP_Enter_Data {
             <h2 class="gktpp-collapse-btn" class="hndle ui-sortable-handle" style="text-align: center;">
                 <span><?php esc_html_e( 'Settings', 'gktpp' ); ?></span>
                 <button type="button" class="handlediv" aria-expanded="false">
-                    <span class="gktpp-toggle-indicator" aria-hidden="true"></span>
+                    <!-- <span class="gktpp-toggle-indicator" aria-hidden="true"></span> -->
                 </button>
             </h2>
 
@@ -250,7 +250,7 @@ class GKTPP_Enter_Data {
                <h2 class="gktpp-collapse-btn" class="hndle ui-sortable-handle" style="text-align: center;">
                     <span><?php esc_html_e( 'Request New Feature or Report a Bug:' ); ?></span>
                     <button type="button" class="handlediv" aria-expanded="false">
-                        <span class="gktpp-toggle-indicator" aria-hidden="true" class=""></span>
+                        <!-- <span class="gktpp-toggle-indicator" aria-hidden="true" class=""></span> -->
                     </button>
                </h2>
 

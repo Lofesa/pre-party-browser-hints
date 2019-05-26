@@ -1183,7 +1183,7 @@ class GKTPP_WP_List_Table {
 
 </table>
 		<?php
-        if (GKTPP_ON_PP_ADMIN_PAGE) {
+        if (GKTPP_CHECK_PAGE === 'ppAdmin') {
             $this->display_tablenav( 'bottom' );
         }
 	}

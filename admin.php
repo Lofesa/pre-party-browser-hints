@@ -35,9 +35,15 @@ To do:
 - Home page hint options
 - Create v 2.0.0 info/updates tab
 - Load PP files at correct times in WP admin area
+- if the as/type/crossorigin attr's are empty, leave a "-"
+
 
 feedback:
-1) allow meta boxes to be visible on custom pages/posts
+
+bugs:
+
+
+
 */
 
 // prevent direct file access
@@ -46,14 +52,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'GKTPP_PLUGIN', __FILE__ );
-define( 'GKTPP_VERSION', '1.6.0' );
+define( 'GKTPP_VERSION', '2.0.0' );
 define( 'GKTPP_PLUGIN_DIR', untrailingslashit( dirname( GKTPP_PLUGIN ) ) );
-define( 'GKTPP_ON_PP_ADMIN_PAGE', gktpp_check_pp_admin() );
+define( 'GKTPP_CHECK_PAGE', gktpp_check_pp_admin() );
+
 
 function gktpp_check_pp_admin() {
     global $pagenow;
-    return ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'gktpp-plugin-settings' ) ? true : false;
+
+    if ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'gktpp-plugin-settings' ) {
+        return 'ppAdmin';
+    } elseif ($pagenow === 'post.php' && isset( $_GET['action'] ) && $_GET['action'] === 'edit') {
+        return 'postEdit';
+    }
+    
 }
+
 
 add_action( 'init', 'gktppInitialize' );
 
@@ -65,7 +79,10 @@ function gktppInitialize() {
         require_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
         require_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
         require_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
-        require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
+
+        if (GKTPP_CHECK_PAGE === 'postEdit') {
+            require_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
+        }
     } 
     
     else {
@@ -89,9 +106,13 @@ function gktpp_register_admin_files() {
     wp_register_style( 'gktpp_styles_css', plugin_dir_url( __FILE__ ) . 'css/styles.css', null, GKTPP_VERSION, 'all' );
     wp_register_script( 'gktpp_admin_js', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery'), GKTPP_VERSION, true );
 
-    if ( $pagenow === 'post.php' || GKTPP_ON_PP_ADMIN_PAGE ) {
+    if ( preg_match('/ppAdmin|postEdit/', GKTPP_CHECK_PAGE ) ) {
         wp_enqueue_script( 'gktpp_admin_js' );
         wp_enqueue_style( 'gktpp_styles_css' );
+    }
+
+    if ( GKTPP_CHECK_PAGE === 'ppAdmin' ) {
+        wp_enqueue_script('postbox');
     }
 }
 

@@ -71,7 +71,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'created_by'	=> __( 'Created By', 'gktpp' ),
         );
 
-        if ( GKTPP_ON_PP_ADMIN_PAGE ) {
+        if ( GKTPP_CHECK_PAGE === 'ppAdmin') {
             $columns['post_name'] = __( 'Post Name', 'gktpp' );
         }
 
@@ -161,7 +161,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 
         $sql = "SELECT * FROM $this->_table";
 
-        if (! GKTPP_ON_PP_ADMIN_PAGE) {
+        if (GKTPP_CHECK_PAGE === 'postEdit') {
             global $post;
             $post_ID = $post->ID;
             $sql .= ' WHERE post_id = ' . $post_ID;

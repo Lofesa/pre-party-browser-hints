@@ -40,6 +40,9 @@ jQuery(document).ready(function($) {
     }
 
     function setAdminJS() {
+
+
+
         var clickTarget = $('.gktpp-collapse-btn');
         clickTarget.on('click', function() {
             $(this).next('div').toggleClass('hide');
@@ -132,3 +135,9 @@ jQuery(document).ready(function($) {
     }
 
 });
+
+
+// jQuery(document).ready(function(){ 
+//     console.log( pagenow );
+//     postboxes.add_postbox_toggles(pagenow);
+//  });
