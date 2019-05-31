@@ -38,8 +38,8 @@ class GKTPP_Enter_Data {
                 <?php 
                     $this->show_pp_radio_options();
 
-                if (GKTPP_CHECK_PAGE) {
-                    wp_nonce_field('gktpp-enter-data');
+                if (GKTPP_CHECK_PAGE === 'ppAdmin') {
+                    // wp_nonce_field('gktpp-enter-data');
                     $this->control_home_page_options();
                 }
                 ?>

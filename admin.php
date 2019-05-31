@@ -77,10 +77,7 @@ function gktppInitialize() {
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-table.php';
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-enter-data.php';
-        
-        if (GKTPP_CHECK_PAGE === 'postEdit') {
-            include_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
-        }
+        include_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-post-hints.php';
     } else {
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-send-hints.php';
     }
@@ -105,10 +102,6 @@ function gktpp_register_admin_files() {
     if (preg_match('/ppAdmin|postEdit/', GKTPP_CHECK_PAGE)) {
         wp_enqueue_script('gktpp_admin_js');
         wp_enqueue_style('gktpp_styles_css');
-    }
-
-    if (GKTPP_CHECK_PAGE === 'ppAdmin') {
-        wp_enqueue_script('postbox');
     }
 }
 

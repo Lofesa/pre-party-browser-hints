@@ -9,39 +9,30 @@ jQuery(document).ready(function($) {
         setAdminJS();
     }
 
-    createHint();
-    function createHint() {
-        var insertElem = $("input#gktppInsertedHints");
-        var insertBtn = $("input#gktpp-submit-hints");
-        var insertObj = {};
+    var insertElem = $("input#gktppInsertedHints");
+    var insertBtn = $("input#gktpp-submit-hints");
+    var insertObj = {};
 
-        insertBtn.on("click", function(e) {
-            var hintType = getHintType();
+    insertBtn.on("click", function(e) {
+        var hintType = getHintType();
 
-            if (URLElem.value.length === 0 || !hintType) {
-                e.preventDefault();
-                alert('Please enter a proper URL and hint type.');
-            } 
-            
-            else if (/post.php/ig.test(currentURL)) {
-                insertObj.url = URLElem.value;
-                $.each($("input.gktpp-radio:checked"), function() {
-                    insertObj.type = $(this).val();
-                });
-                return insertElem.val( JSON.stringify(insertObj));
-            } 
-
-
-        });
-    }
+        if (URLElem.value.length === 0 || !hintType) {
+            e.preventDefault();
+            alert('Please enter a proper URL and hint type.');
+        } 
+        
+        else if (/post.php/ig.test(currentURL)) {
+            insertObj.url = URLElem.value;
+            insertObj.type = hintType;
+            insertElem.val( JSON.stringify(insertObj));
+        } 
+    });
 
     function getHintType() {
         return $("input.gktpp-radio:checked").val();
     }
 
     function setAdminJS() {
-
-
 
         var clickTarget = $('.gktpp-collapse-btn');
         clickTarget.on('click', function() {
@@ -135,9 +126,3 @@ jQuery(document).ready(function($) {
     }
 
 });
-
-
-jQuery(document).ready(function(){ 
-    console.log( pagenow );
-    postboxes.add_postbox_toggles(pagenow);
- });

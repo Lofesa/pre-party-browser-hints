@@ -82,7 +82,7 @@ class GKTPP_Options {
 		}
 		
         echo '<div class="wrap">';
-        // echo '<h2>Pre* Party Plugin Settings</h2>';
+        echo '<h2>Pre* Party Plugin Settings</h2>';
         $obj = get_current_screen();
 
         $this->show_admin_tabs();
@@ -101,7 +101,6 @@ class GKTPP_Options {
 
         if ( GKTPP_CHECK_PAGE === 'ppAdmin') {
             echo '<form id="gktpp-list-table" method="post" action="' . admin_url( 'admin.php?page=gktpp-plugin-settings' ) . '">';
-            // echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
             $gktpp_table->display();
             echo '</form>';
         } 
@@ -126,7 +125,7 @@ class GKTPP_Options {
                 $this->display_list_table();
                 $this->add_conditional_form_elem();
                 GKTPP_Enter_Data::show_info();
-                // GKTPP_Enter_Data::contact_author();
+                GKTPP_Enter_Data::contact_author();
             break;
 
             case 'info':
@@ -139,7 +138,7 @@ class GKTPP_Options {
                 $this->add_conditional_form_elem();
 
                 GKTPP_Enter_Data::show_info();
-                // GKTPP_Enter_Data::contact_author();
+                GKTPP_Enter_Data::contact_author();
             break;
         }
 
@@ -148,7 +147,7 @@ class GKTPP_Options {
 
 	public function screen_option() {
 
-        $this->register_meta_boxes();
+        // $this->register_meta_boxes();
 
 		$option = 'per_page';
 		$args = array(

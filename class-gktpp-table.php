@@ -150,7 +150,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         $this->items = $data;
 
         $this->set_pagination_args( array(
-            'total_items' => count($total_items),
+            'total_items' => $total_items,
             'per_page'    => $this->_hints_per_page,
             'total_pages' => ceil($total_items/$this->_hints_per_page)
         ) );
@@ -178,7 +178,6 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         $sql .= " LIMIT $per_page";
         $sql .= ' OFFSET ' . ( $current_page - 1 ) * $per_page;
         $this->_data = $wpdb->get_results( $sql, ARRAY_A );
-
 	    return $this->_data;
 	}
 
