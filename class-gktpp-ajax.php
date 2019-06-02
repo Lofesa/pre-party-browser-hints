@@ -18,7 +18,7 @@ class GKTPP_Ajax {
         $post_ID = (string) $wp_query->queried_object_id;
 
         if (is_home()) {
-            $post_ID = '-1';
+            $post_ID = '0';
             $reset_hints = get_option('gktpp_reset_home_posts');
         } else {
             $reset_hints = get_post_meta($post_ID, $this->post_preconnect_reset, true);

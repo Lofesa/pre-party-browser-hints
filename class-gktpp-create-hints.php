@@ -12,7 +12,7 @@ class GKTPP_Create_Hints {
     //     add_action( "admin_init", array( $this, 'save_data' ) );
     // }
 
-    public function create_hint($url, $hint_type, $post_id) {
+    public function create_hint($url, $hint_type, $post_id = null) {
 
         global $wpdb;
         $this->table = $wpdb->prefix . 'gktpp_table';
@@ -20,9 +20,9 @@ class GKTPP_Create_Hints {
         if (!empty($post_id)) {
             $this->post_id = $post_id;
         } elseif (isset($_POST['UseOnHomePostsOnly'])) {
-            $this->post_id = 'HomePostPage';
-        } else {
             $this->post_id = '0';
+        } else {
+            $this->post_id = '';
         }
 
         $this->sanitize_data($url, $hint_type);
@@ -48,7 +48,8 @@ class GKTPP_Create_Hints {
     public function sanitize_data($url, $hint_type) {
         $this->url = filter_var(str_replace(' ', '', $url), FILTER_SANITIZE_URL);
         $this->hint_type = preg_replace('/[^%A-z-]/', '', $hint_type);
-        return $this->post_id = preg_replace('/[^a-zA-Z0-9]+/', '', $this->post_id);
+        return $this->post_id = (is_numeric($this->post_id)) ? $this->post_id : '';
+
     }
 
     public function parse_for_domain_name() {
@@ -108,7 +109,7 @@ class GKTPP_Create_Hints {
         $lower_case_hint = strtolower($this->hint_type);
 
         $this->head_str = '<link href="' . $this->url . '" rel="' . $lower_case_hint . '"';
-        $this->header_str = "<$this->url>; rel=\"$lower_case_hint\"";
+        $this->header_str = "<$this->url>; rel=\"$lower_case_hint\";";
 
         if (!empty($this->as_attr)) {
             $this->head_str .= " as=\"$this->as_attr\"";

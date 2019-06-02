@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'GKTPP_WP_List_Table' ) ) {
     require_once( GKTPP_PLUGIN_DIR . '/class-gktpp-wp-list-table.php' );
 }
+// page_for_posts option- gets ID of home page, if 0 the home page shows only posts
 
 class GKTPP_Table extends GKTPP_WP_List_Table {
 
@@ -28,12 +29,16 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         global $wpdb;
         $postID = $item['post_id'];
 
-        if (! preg_match('/0|HomePostPage/', $postID) ) {
+        if ($postID === '0') {
+            $link = 'Home';
+        } elseif ($postID === '') {
+            $link = 'Global';
+        } else {
             $table = $wpdb->prefix . 'posts';
             $sql = "SELECT post_title FROM $table WHERE ID = $postID";
             $post_result = $wpdb->get_row($sql, OBJECT, 0);
             $link = '<a href="/wp-admin/post.php?post=' . $item['post_id'] . '&action=edit">' . $post_result->post_title . '</a>';
-        }
+        } 
 
 		switch ($column_name) {
             case 'url':
@@ -48,8 +53,8 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
                 return ($item['crossorigin']) ? $item['crossorigin'] : '-';
             case 'status': 
                 return $item['status'];
-            case 'post_name':
-                return ($postID === 'HomePostPage') ? 'Home' : (($postID === '0') ? 'Global' : $link);
+            case 'post_id':
+                return $link;
             case 'created_by': 
                 return $item['created_by'];
             default:
@@ -72,11 +77,12 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'crossorigin'   => __( 'Crossorigin', 'gktpp' ),
             'status'		=> __( 'Status', 'gktpp' ),
             'created_by'	=> __( 'Created By', 'gktpp' ),
+            'post_id'	    => __( 'Post ID', 'gktpp' ),
         );
 
-        if (GKTPP_CHECK_PAGE === 'ppAdmin') {
-            $columns['post_name'] = __('Post Name', 'gktpp');
-        }
+        // if (GKTPP_CHECK_PAGE === 'ppAdmin') {
+            // $columns['post_name'] = __('Post Name', 'gktpp');
+        // }
 
         return $columns;
     }
@@ -89,7 +95,8 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'type_attr'     => array( 'type_attr', false ),
             'crossorigin'   => array( 'crossorigin', false ),
             'status'    	=> array( 'status', false ),
-            'created_by'    => array( 'created_by', false )
+            'created_by'    => array( 'created_by', false ),
+            'post_id'       => array( 'post_id', false )
 		);
 
 		return $sortable_columns;
@@ -167,7 +174,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
         if (GKTPP_CHECK_PAGE === 'postEdit') {
             global $post;
             $post_ID = $post->ID;
-            $sql .= ' WHERE post_id = ' . $post_ID . ' OR post_id = "0"';
+            $sql .= ' WHERE post_id = ' . $post_ID . ' OR post_id = ""';
         }
 
         if ( ! empty( $_REQUEST['orderby'] ) ) {
@@ -175,8 +182,8 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
         }
 
-        $sql .= " LIMIT $per_page";
-        $sql .= ' OFFSET ' . ( $current_page - 1 ) * $per_page;
+        // $sql .= " LIMIT $per_page";
+        // $sql .= ' OFFSET ' . ( $current_page - 1 ) * $per_page;
         $this->_data = $wpdb->get_results( $sql, ARRAY_A );
 	    return $this->_data;
 	}

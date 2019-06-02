@@ -31,16 +31,21 @@
 To do:
 - security
 - Turn form boxes on PP page into real modal boxes
-- set and update hints for the home page, if it is set to display only the latest posts. 
 - add option to clear auto preconnect hints from home-posts page.
 - Home page hint options
 - Create v 2.0.0 info/updates tab
 
 feedback:
+1. 'disable auto WP RH's' option not working? (only in header?)
+2. option to show/hide certain columns not working
+3. add notice to indicate if a given hint is not legit (ex- domain name for a preload)
+4. add notices when a redundant hint attempts to be added, or when redudant hints are removed.
+
 
 bugs:
-
-
+1. global 'reset preconnect hints' not working
+2. reset hints for home page w/ only posts not working or loading hints after
+3. clean up header hint str
 
 */
 
@@ -83,7 +88,7 @@ function gktppInitialize() {
     }
 
     // this needs to be loaded front end and back end bc Ajax needs to be able to communicate between the two.
-    if ((get_option('gktpp_autoload_preconnects') === 'Yes')) {
+    if ((get_option('gktpp_autoload_preconnects') === 'true')) {
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-ajax.php';
     }
 }
@@ -113,9 +118,9 @@ add_action('wpmu_new_blog', 'gktpp_install_db_table');
 function gktpp_install_db_table() {
     global $wpdb;
 
-    add_option('gktpp_autoload_preconnects', 'Yes', '', 'yes');
-    add_option('gktpp_send_in_header', 'HTTP Header', '', 'yes');
-    add_option('gktpp_disable_wp_hints', 'No', '', 'yes');
+    add_option('gktpp_autoload_preconnects', 'true', '', 'yes');
+    add_option('gktpp_send_in_header', 'false', '', 'yes');
+    add_option('gktpp_disable_wp_hints', 'false', '', 'yes');
     add_option('gktpp_reset_home_posts', 'notset', '', 'yes');
 
 
@@ -193,7 +198,7 @@ add_action('wp_head', 'gktpp_disable_wp_hints', 1, 0);
 function gktpp_disable_wp_hints() {
     $option = get_option('gktpp_disable_wp_hints');
 
-    if ($option === 'Yes') {
+    if ($option === 'true') {
         remove_action('wp_head', 'wp_resource_hints', 2);
     }
 }

@@ -137,10 +137,17 @@ class GKTPP_Enter_Data {
 
     private static function user_options() {
         global $wpdb;
+        $table = $wpdb->prefix . 'postmeta';
 
         if (isset($_POST['gktpp-reset-preconnect'])) {
-            update_option('gktpp_reset_preconnect', 'notset');
-            update_option('gktpp_autoload_preconnects', 'Yes');
+            $sql = "UPDATE $table SET meta_value = 'notset' WHERE meta_key = 'gktpp_preconnect_reset'";
+            $wpdb->query($sql);
+            // update_option('gktpp_reset_preconnect', 'notset');
+            update_option('gktpp_autoload_preconnects', 'true');
+        }
+        
+        if (isset($_POST['gktpp_reset_home_posts'])) {
+            update_option('gktpp_reset_home_posts', 'notset');
         }
 
         if (isset($_POST['gktpp-save-user-options'])) {
@@ -159,6 +166,10 @@ class GKTPP_Enter_Data {
 
             <div class="gktpp-div">
                 <h2 class="gktpp-hint"><?php esc_html_e('Automatically Set Preconnect Hints?', 'gktpp'); ?></h2>
+                <select name="gktpp-preconnect-status">
+                    <option value="<?php echo esc_attr('true', 'gktpp'); ?>" <?php if ('true' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e('Yes', 'gktpp'); ?></option>
+                    <option value="<?php echo esc_attr('false', 'gktpp'); ?>" <?php if ('false' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e('No', 'gktpp'); ?></option>
+                </select>
                 <button class="gktpp-help-tip-hint after">
                     <p class='gktpp-help-tip-box'><?php esc_html_e('JavaScript, CSS, and images loaded from external domains will preconnect automatically.', 'gktpp'); ?></p>
                 </button>
@@ -166,11 +177,23 @@ class GKTPP_Enter_Data {
                 <br />
                 <br />
 
-                <select name="gktpp-preconnect-status">
-                    <option value="<?php echo esc_attr('Yes', 'gktpp'); ?>" <?php if ('Yes' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e('Yes', 'gktpp'); ?></option>
-                    <option value="<?php echo esc_attr('No', 'gktpp'); ?>" <?php if ('No' === $preconnect_status ) echo 'selected="selected"'; ?>><?php esc_html_e('No', 'gktpp'); ?></option>
-                </select>
                 <input type="submit" name="gktpp-reset-preconnect" class="button-secondary" value="<?php esc_attr_e('Reset All Preconnect Links?', 'gktpp'); ?>" />
+                <button class="gktpp-help-tip-hint after">
+                    <p class='gktpp-help-tip-box'><?php esc_html_e('This will reset all automatically set hints across all pages and posts!', 'gktpp'); ?></p>
+                </button>
+
+                <br />
+                <br />
+                <br />
+
+                <?php
+                    if (get_option( 'show_on_front' ) === 'posts') { ?>
+                        <input type="submit" name="gktpp_reset_home_posts" class="button-secondary" value="<?php esc_attr_e('Reset Home Preconnect Links?', 'gktpp'); ?>" />
+                        <button class="gktpp-help-tip-hint after">
+                            <p class='gktpp-help-tip-box'><?php esc_html_e('This will reset the hints which are automatically set for the home page only.', 'gktpp'); ?></p>
+                        </button>
+                <?php } ?>
+
             </div>
 
 
