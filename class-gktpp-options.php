@@ -119,13 +119,14 @@ class GKTPP_Options {
     public function display_admin_content() {
 
         $tab = isset($_GET['tab']) ? $_GET['tab'] : 'insert-urls';
+        $gktpp_enter_data = new GKTPP_Enter_Data();
 
         switch ( $tab ) {
             case 'insert-urls':
                 $this->display_list_table();
                 $this->add_conditional_form_elem();
-                GKTPP_Enter_Data::show_info();
-                GKTPP_Enter_Data::contact_author();
+                $gktpp_enter_data->show_info();
+                $gktpp_enter_data->contact_author();
             break;
 
             case 'info':
@@ -137,8 +138,8 @@ class GKTPP_Options {
                 $this->display_list_table();
                 $this->add_conditional_form_elem();
 
-                GKTPP_Enter_Data::show_info();
-                GKTPP_Enter_Data::contact_author();
+                $gktpp_enter_data->show_info();
+                $gktpp_enter_data->contact_author();
             break;
         }
 

@@ -99,7 +99,6 @@ function gktppInitialize() {
 add_action('admin_menu', 'gktpp_register_admin_files');
 
 function gktpp_register_admin_files() {
-    global $pagenow;
     
     wp_register_style('gktpp_styles_css', plugin_dir_url(__FILE__) . 'css/styles.css', null, GKTPP_VERSION, 'all');
     wp_register_script('gktpp_admin_js', plugin_dir_url(__FILE__) . 'js/admin.js', array('jquery'), GKTPP_VERSION, true);
@@ -122,7 +121,6 @@ function gktpp_install_db_table() {
     add_option('gktpp_send_in_header', 'false', '', 'yes');
     add_option('gktpp_disable_wp_hints', 'false', '', 'yes');
     add_option('gktpp_reset_home_posts', 'notset', '', 'yes');
-
 
     $table = $wpdb->prefix . 'gktpp_table';
     $charset_collate = $wpdb->get_charset_collate();
@@ -199,7 +197,7 @@ function gktpp_disable_wp_hints() {
     $option = get_option('gktpp_disable_wp_hints');
 
     if ($option === 'true') {
-        remove_action('wp_head', 'wp_resource_hints', 2);
+        return remove_action('wp_head', 'wp_resource_hints', 2);
     }
 }
 

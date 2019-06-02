@@ -117,7 +117,7 @@ class GKTPP_Enter_Data {
         <?php
     }
 
-    public static function show_info() { ?>
+    public function show_info() { ?>
         <div class="gktpp-table info postbox">
 
             <h2 class="gktpp-collapse-btn" class="hndle ui-sortable-handle" style="text-align: center;">
@@ -128,27 +128,30 @@ class GKTPP_Enter_Data {
             </h2>
 
             <div class="gktpp-collapse-box">
-                <?php self::user_options(); ?>
+                <?php $this->user_options(); ?>
             </div>
 
         </div>
         <?php
     }
 
-    private static function user_options() {
+    public function user_options() {
         global $wpdb;
         $table = $wpdb->prefix . 'postmeta';
 
         if (isset($_POST['gktpp-reset-preconnect'])) {
             $sql = "UPDATE $table SET meta_value = 'notset' WHERE meta_key = 'gktpp_preconnect_reset'";
             $wpdb->query($sql);
-            // update_option('gktpp_reset_preconnect', 'notset');
             update_option('gktpp_autoload_preconnects', 'true');
+            // update_option('gktpp_reset_preconnect', 'notset');       // old meta value, can delete it on update.
         }
         
-        if (isset($_POST['gktpp_reset_home_posts'])) {
+        if (isset($_POST['gktpp-reset-home-posts'])) {
             update_option('gktpp_reset_home_posts', 'notset');
         }
+
+
+        
 
         if (isset($_POST['gktpp-save-user-options'])) {
             update_option('gktpp_autoload_preconnects', $_POST['gktpp-preconnect-status']);
@@ -188,7 +191,7 @@ class GKTPP_Enter_Data {
 
                 <?php
                     if (get_option( 'show_on_front' ) === 'posts') { ?>
-                        <input type="submit" name="gktpp_reset_home_posts" class="button-secondary" value="<?php esc_attr_e('Reset Home Preconnect Links?', 'gktpp'); ?>" />
+                        <input type="submit" name="gktpp-reset-home-posts" class="button-secondary" value="<?php esc_attr_e('Reset Home Preconnect Links?', 'gktpp'); ?>" />
                         <button class="gktpp-help-tip-hint after">
                             <p class='gktpp-help-tip-box'><?php esc_html_e('This will reset the hints which are automatically set for the home page only.', 'gktpp'); ?></p>
                         </button>

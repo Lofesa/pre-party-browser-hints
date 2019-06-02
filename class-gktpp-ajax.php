@@ -51,7 +51,7 @@ class GKTPP_Ajax {
                 );
 
                 $global_hints = array();
-                $prev_hints = $wpdb->get_results("SELECT url FROM $table WHERE post_ID = $post_ID OR post_ID = '0'", ARRAY_A);
+                $prev_hints = $wpdb->get_results("SELECT url FROM $table WHERE post_ID = $post_ID OR post_ID = ''", ARRAY_A);
 
 
                 foreach ($prev_hints as $hint => $val) {
@@ -67,10 +67,10 @@ class GKTPP_Ajax {
                 }
             }
 
-            if ($post_ID !== '-1') {
-                update_post_meta($post_ID, $this->post_preconnect_reset, 'set');
-            } else {
+            if ($post_ID === '0') {
                 update_option('gktpp_reset_home_posts', 'set', 'yes');
+            } elseif ($post_ID !== '0') {
+                update_post_meta($post_ID, $this->post_preconnect_reset, 'set');
             }
 
             wp_die();
