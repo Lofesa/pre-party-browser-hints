@@ -152,7 +152,8 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
 
         $current_page = $this->get_pagenum();
         $total_items = count($this->_data);
-        $data = array_slice($this->_data,(($current_page-1)*$this->_hints_per_page), $this->_hints_per_page);
+
+        $data = array_slice($this->_data, (($current_page-1) * $this->_hints_per_page), $this->_hints_per_page);
 
         $this->items = $data;
 
@@ -182,13 +183,9 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
         }
 
-        // $sql .= " LIMIT $per_page";
-        // $sql .= ' OFFSET ' . ( $current_page - 1 ) * $per_page;
         $this->_data = $wpdb->get_results( $sql, ARRAY_A );
 	    return $this->_data;
 	}
-
-
 
 	public function update_hints( $action, $hint_ids ) {
         global $wpdb;

@@ -75,8 +75,9 @@ function GKTPP_Check_PP_admin() {
 add_action('init', 'gktppInitialize');
 
 function gktppInitialize() {
+    global $pagenow;
 
-    if (is_admin()) {
+    if (is_admin() && $pagenow !== 'post-new.php') {
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-create-hints.php';
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-options.php';
         include_once GKTPP_PLUGIN_DIR . '/class-gktpp-info.php';
