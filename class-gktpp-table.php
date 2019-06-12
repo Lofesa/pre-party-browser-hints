@@ -80,10 +80,6 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'post_id'	    => __( 'Post ID', 'gktpp' ),
         );
 
-        // if (GKTPP_CHECK_PAGE === 'ppAdmin') {
-            // $columns['post_name'] = __('Post Name', 'gktpp');
-        // }
-
         return $columns;
     }
     

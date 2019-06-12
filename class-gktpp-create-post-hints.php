@@ -110,9 +110,6 @@ class GKTTP_Posts {
         // 
         // wp_verify_nonce('gktpp_post_nonce2', 'save_post');
 
-
-
-
     }
     
 }

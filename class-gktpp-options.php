@@ -61,7 +61,7 @@ class GKTPP_Options {
 
 	public function show_admin_tabs( $current = 'insert-urls' ) {
 
-        $current_tab = (isset( $_GET['tab'] )) ? $_GET['tab'] : 'insert-urls';
+        $current_tab = (isset($_GET['tab'])) ? $_GET['tab'] : 'insert-urls';
 
 		$tabs = array(
             'insert-urls'   => 'Insert URLs',
