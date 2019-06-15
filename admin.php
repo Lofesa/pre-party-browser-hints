@@ -34,6 +34,7 @@ To do:
 - add option to clear auto preconnect hints from home-posts page.
 - Home page hint options
 - Create v 2.0.0 info/updates tab
+- create plan for handling hints that are already in place from previous plugin edition.
 
 feedback:
 1. 'disable auto WP RH's' option not working? (only in header?)
