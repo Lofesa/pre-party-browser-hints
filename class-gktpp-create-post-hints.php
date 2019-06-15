@@ -8,7 +8,7 @@ class GKTTP_Posts {
 
     public function __construct() {
         $this->meta_preconnect_key = 'gktpp_preconnect_reset';
-        add_action('add_meta_boxes', array($this, 'create_meta_box'));
+        add_action('add_meta_boxes', array($this, 'create_meta_box'), 10, 0);
 
         // add_action('edit_post', array($this, 'save_hints'));
         // add_action('pre_post_update', array($this, 'save_hints'), 10, 1);
@@ -20,8 +20,8 @@ class GKTTP_Posts {
         $title =  'Pre* Party Resource Hints';
         $callback = array( $this, 'create_pp_meta_box' );
         $context = 'normal';
-        $priority = 'high';
-        $callback_args = '';
+        $priority = 'low';
+        // $callback_args = '';
         $screens = get_post_types();
 
         foreach ($screens as $screen) {
@@ -31,8 +31,8 @@ class GKTTP_Posts {
                 $callback, 
                 $screen, 
                 $context, 
-                $priority, 
-                $callback_args
+                $priority
+                // $callback_args
                 // array('__block_editor_compatible_meta_box' => false)
             );
         }
