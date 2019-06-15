@@ -31,7 +31,6 @@ class GKTPP_Create_Hints {
             $this->parse_for_domain_name();
         }
 
-
         $this->set_attributes();
         $this->create_str();         
         
@@ -42,14 +41,12 @@ class GKTPP_Create_Hints {
         $this->insert_hints();
         return $this->results;
         //  wp_safe_redirect( admin_url( "admin.php?page=gktpp-plugin-settings$results" ));
-
     }
 
     public function sanitize_data($url, $hint_type) {
         $this->url = filter_var(str_replace(' ', '', $url), FILTER_SANITIZE_URL);
         $this->hint_type = preg_replace('/[^%A-z-]/', '', $hint_type);
         return $this->post_id = (is_numeric($this->post_id)) ? $this->post_id : '';
-
     }
 
     public function parse_for_domain_name() {
@@ -127,13 +124,10 @@ class GKTPP_Create_Hints {
         }
 
         $this->head_str .= '>';
-
-        $lastSemiColonPos = strrpos($this->header_str, ';');
+        $headerStrLen = strlen($this->header_str) - 1;
 
         // replace the last semi-colon and replace it with a comma.
-        if ($lastSemiColonPos === (strlen($this->header_str) - 2)) {
-            $this->header_str = substr($this->header_str, 0, $lastSemiColonPos) . ',';
-        }
+        $this->header_str = substr($this->header_str, 0, $headerStrLen) . '';
 
         return $this;
     }
