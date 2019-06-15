@@ -13,7 +13,6 @@ class GKTPP_Create_Hints {
     // }
 
     public function create_hint($url, $hint_type, $post_id = null) {
-
         global $wpdb;
         $this->table = $wpdb->prefix . 'gktpp_table';
 
@@ -34,7 +33,8 @@ class GKTPP_Create_Hints {
         $this->set_attributes();
         $this->create_str();         
         
-        if ($this->post_id === '0') {
+        // if dup hint is being added, should halt the addition and throw warning msg.
+        if ( empty($this->post_id) ) {
             $this->remove_duplicate_post_hints();
         }
         
