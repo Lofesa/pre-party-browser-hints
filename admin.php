@@ -34,7 +34,9 @@ To do:
 - add option to clear auto preconnect hints from home-posts page.
 - Home page hint options
 - Create v 2.0.0 info/updates tab
-- create plan for handling hints that are already in place from previous plugin edition.
+- create plan for handling hints that are already in place from previous plugin edition, ensure backwards compat.
+- prevent users from deleting global hints from posts pages (they may unintentionally do this and not know the consequence)
+
 
 feedback:
 1. 'disable auto WP RH's' option not working? (only in header?)
@@ -44,8 +46,9 @@ feedback:
 
 
 bugs:
-2. reset hints for home page w/ only posts not working or loading hints after
-3. clean up header hint str
+1. reset hints for home page w/ only posts not working or loading hints after
+
+
 
 */
 
@@ -54,9 +57,8 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('GKTPP_PLUGIN', __FILE__);
 define('GKTPP_VERSION', '2.0.0');
-define('GKTPP_PLUGIN_DIR', untrailingslashit(dirname(GKTPP_PLUGIN)));
+define('GKTPP_PLUGIN_DIR', untrailingslashit(dirname(__FILE__)));
 define('GKTPP_CHECK_PAGE', GKTPP_Check_PP_admin());
 
 
@@ -198,7 +200,7 @@ function gktpp_disable_wp_hints() {
     $option = get_option('gktpp_disable_wp_hints');
 
     if ($option === 'true') {
-        return remove_action('wp_head', 'wp_resource_hints', 2);
+        return remove_action('wp_head', 'wp_resource_hints');
     }
 }
 

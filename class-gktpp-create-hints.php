@@ -16,7 +16,7 @@ class GKTPP_Create_Hints {
         global $wpdb;
         $this->table = $wpdb->prefix . 'gktpp_table';
 
-        if (!empty($post_id)) {
+        if (!is_null($post_id)) {
             $this->post_id = $post_id;
         } elseif (isset($_POST['UseOnHomePostsOnly'])) {
             $this->post_id = '0';
@@ -185,7 +185,7 @@ class GKTPP_Create_Hints {
                 'post_id'       => $this->post_id,
                 'created_by'    => $current_user
             ),
-            array( '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')
+            array( '%s','%s','%d','%s','%s','%s','%s','%s','%s','%s')
         );
 
         return $this->result['added'] = 'success';

@@ -77,7 +77,7 @@ class GKTPP_Table extends GKTPP_WP_List_Table {
             'crossorigin'   => __( 'Crossorigin', 'gktpp' ),
             'status'		=> __( 'Status', 'gktpp' ),
             'created_by'	=> __( 'Created By', 'gktpp' ),
-            'post_id'	    => __( 'Post ID', 'gktpp' ),
+            'post_id'	    => __( 'Post Name', 'gktpp' ),
         );
 
         return $columns;
