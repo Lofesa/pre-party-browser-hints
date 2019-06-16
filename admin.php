@@ -44,7 +44,6 @@ feedback:
 
 
 bugs:
-1. global 'reset preconnect hints' not working
 2. reset hints for home page w/ only posts not working or loading hints after
 3. clean up header hint str
 

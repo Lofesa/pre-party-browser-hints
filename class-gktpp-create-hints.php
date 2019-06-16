@@ -26,18 +26,17 @@ class GKTPP_Create_Hints {
 
         $this->sanitize_data($url, $hint_type);
 
+        // if dup hint is being added, should halt the addition and throw warning msg.
+        // if ( empty($this->post_id) ) {
+            $this->remove_duplicate_post_hints();
+        // }
+
         if (preg_match('/(DNS-Prefetch|Preconnect)/', $this->hint_type)) {
             $this->parse_for_domain_name();
         }
 
         $this->set_attributes();
-        $this->create_str();         
-        
-        // if dup hint is being added, should halt the addition and throw warning msg.
-        if ( empty($this->post_id) ) {
-            $this->remove_duplicate_post_hints();
-        }
-        
+        $this->create_str();
         $this->insert_hints();
         return $this->results;
         //  wp_safe_redirect( admin_url( "admin.php?page=gktpp-plugin-settings$results" ));
@@ -99,6 +98,7 @@ class GKTPP_Create_Hints {
         } else {
             $this->type_attr = '';
         }
+
         return $this;
     }
 
@@ -134,9 +134,18 @@ class GKTPP_Create_Hints {
 
     public function remove_duplicate_post_hints() {
         global $wpdb;
-        $url2 = "'" . $this->url . "'";
-        $hint2 = "'" . $this->hint_type . "'";
-        $sql = "SELECT COUNT(*) FROM $this->table WHERE hint_type = $hint2 AND url = $url2";
+        $url = "'" . $this->url . "'";
+        $hint = "'" . $this->hint_type . "'";
+
+        $sql = "SELECT COUNT(*) FROM $this->table WHERE hint_type = $hint AND url = $url";
+
+        if ( ! empty($this->post_id) ) {
+            $sql .= " AND post_id = '' OR post_id = $this->post_id";
+        } else {
+            $sql .= " AND post_id = ''";
+        }
+
+
         $count = $wpdb->get_var($sql);
 
         if ($count > 0) {
@@ -145,7 +154,7 @@ class GKTPP_Create_Hints {
                 array(
                     'url'           => $this->url,
                     'hint_type'     => $this->hint_type
-                ), 
+                ),
                 array('%s', '%s')
             );
 
